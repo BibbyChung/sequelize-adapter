@@ -5,6 +5,7 @@ import { UnitOfWorkBase } from '../src/unitOfWorkBase';
 import { IUserEntity } from './IUserEntity';
 
 export class UserRepository extends RepositoryBase<IUserEntity> {
+
   get tableName(): string {
     return 'users';
   }

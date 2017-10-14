@@ -1,6 +1,5 @@
-import { IEntityBase } from './../src/IEntityBase';
-
-export interface IUserEntity extends IEntityBase {
+export interface IUserEntity {
+  id: string;
   name: string;
   age: number;
   brithday: Date;

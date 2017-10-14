@@ -11,7 +11,7 @@ export abstract class UnitOfWorkBase {
 
   abstract get db(): Sequelize.Sequelize;
   abstract set db(value: Sequelize.Sequelize);
-  
+
   __reps = {};
 
   __add<T>(rep: RepositoryBase<any>, entity: T) {
@@ -27,7 +27,6 @@ export abstract class UnitOfWorkBase {
   }
 
   async connectDb() {
-
     if (!this.db) {
       throw Error('please set up the connection information.');
     }
@@ -40,7 +39,7 @@ export abstract class UnitOfWorkBase {
       }
       console.log('connect db', 'Connection has been established successfully.');
     } catch (err) {
-      console.log('connect db', `Unable to connect to the database: ${err}`);
+      throw err;
     }
   }
 
@@ -65,9 +64,9 @@ export abstract class UnitOfWorkBase {
 
       return Promise.all(pArr)
         .then(() => t.commit())
-        .catch((err) => {
-          console.log(err);
+        .catch(err => {
           t.rollback();
+          throw err;
         });
     });
   }
