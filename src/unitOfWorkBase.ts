@@ -43,6 +43,10 @@ export abstract class UnitOfWorkBase {
     }
   }
 
+  async close() {
+    this.db.close();
+  }
+
   async saveChange() {
     return this.db.transaction().then((t) => {
       const pArr = [];

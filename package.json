@@ -2,8 +2,8 @@
   "name": "sequelize-adapter",
   "version": "1.0.0",
   "description": "make the sequelize easy to use.",
-  "main": "./dist/code/_index.js",
-  "types": "./dist/code/_index.d.ts",
+  "main": "./dist/_index.js",
+  "types": "./dist/_index.d.ts",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --opts mocha.opts",
     "build": "gulp build"
