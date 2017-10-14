@@ -27,7 +27,7 @@ export class MyUnitOfWork extends UnitOfWorkBase {
     user: new UserRepository(this),
   };
 
-  init() {
+  private init() {
     const setting = {
       host: 'localhost',
       dbName: 'todolistDb',
