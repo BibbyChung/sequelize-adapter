@@ -1,7 +1,7 @@
 {
   "name": "sequelize-adapter",
-  "version": "1.0.0",
-  "description": "make the sequelize easy to use.",
+  "version": "1.0.2",
+  "description": "Use Unit Of Wrok pattern to wrap sequelize up and make sequelize easy to use.",
   "main": "./dist/_index.js",
   "types": "./dist/_index.d.ts",
   "scripts": {
@@ -12,7 +12,8 @@
   "keywords": [
     "sequelize",
     "mysql",
-    "sqlite"
+    "sqlite",
+    "unitofwork"
   ],
   "license": "ISC",
   "devDependencies": {
