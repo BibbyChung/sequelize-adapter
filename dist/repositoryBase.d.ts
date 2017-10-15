@@ -1,5 +1,5 @@
 /// <reference types="sequelize" />
-import * as Sequelize from 'Sequelize';
+import * as Sequelize from 'sequelize';
 import { UnitOfWorkBase } from './unitOfWorkBase';
 export declare abstract class RepositoryBase<T> {
     unitOfWork: UnitOfWorkBase;
