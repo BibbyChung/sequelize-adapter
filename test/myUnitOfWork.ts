@@ -36,7 +36,7 @@ export class MyUnitOfWork extends UnitOfWorkBase {
       type: 'sqlite', // 'mysql'
     };
 
-    const mysqlOptions = {
+    const options = {
       host: setting.host,
       dialect: setting.type,
       pool: {
@@ -46,7 +46,7 @@ export class MyUnitOfWork extends UnitOfWorkBase {
       },
     };
 
-    this.db = new Sequelize(setting.dbName, setting.username, setting.password, mysqlOptions);
+    this.db = new Sequelize(setting.dbName, setting.username, setting.password, options);
     this.__reps = this.reps;
   }
 
