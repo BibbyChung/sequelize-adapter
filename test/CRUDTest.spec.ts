@@ -35,8 +35,8 @@ describe('prepare the database to test', () => {
 
   it('add items and update items and delete items in database', async () => {
 
-    const criteria = { order: ['name'] }
-    
+    const criteria = { order: ['name'] };
+
     // add items
     for (let i = 0; i < 5; i += 1) {
       mydb.reps.user.add({

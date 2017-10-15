@@ -28,12 +28,13 @@ export class MyUnitOfWork extends UnitOfWorkBase {
   };
 
   private init() {
+    // test in memory
     const setting = {
       host: 'localhost',
-      dbName: 'todolistDb',
+      dbName: 'test_db',
       username: 'root',
       password: '1234',
-      type: 'mysql',
+      type: 'sqlite', // 'mysql'
     };
 
     const mysqlOptions = {
