@@ -42,11 +42,11 @@
     "chai": "^4.1.2",
     "sinon-chai": "^2.14.0",
     "supertest": "^3.0.0",
-    "uuid": "^3.1.0"
-  },
-  "dependencies": {
-    "sequelize": "^4.13.6",
+    "uuid": "^3.1.0",
     "mysql2": "^1.4.2",
     "sqlite3": "^3.1.13"
+  },
+  "dependencies": {
+    "sequelize": "^4.13.6"
   }
 }
