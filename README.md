@@ -19,7 +19,7 @@ You can use TypeScirpt or JavaScript. Up to you.
 
 ### TypeScript
 
-create your unitofwork class
+create your classes what you need.
 
 ```javascript
 
@@ -127,7 +127,7 @@ export interface IUserEntity {
 }
 
 ```
-Examples for CRUD
+CRUD Examples
 
 ```javascript
 
