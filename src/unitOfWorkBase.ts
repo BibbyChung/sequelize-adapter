@@ -1,5 +1,5 @@
+import * as Sequelize from 'sequelize';
 import { RepositoryBase } from './repositoryBase';
-import * as Sequelize from 'Sequelize';
 
 export abstract class UnitOfWorkBase {
 

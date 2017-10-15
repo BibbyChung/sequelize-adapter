@@ -24,7 +24,7 @@ create your classes what you need.
 ```javascript
 
 // myUnitOfWork.ts
-import * as Sequelize from 'Sequelize';
+import * as Sequelize from 'sequelize';
 import { UnitOfWorkBase } from '../src/unitOfWorkBase';
 import { RepositoryBase } from '../src/repositoryBase';
 import { UserRepository } from './userRepository';
@@ -79,7 +79,7 @@ export class MyUnitOfWork extends UnitOfWorkBase {
 
 
 // userRepository.ts
-import * as Sequelize from 'Sequelize';
+import * as Sequelize from 'sequelize';
 
 import { RepositoryBase } from '../src/repositoryBase';
 import { UnitOfWorkBase } from '../src/unitOfWorkBase';

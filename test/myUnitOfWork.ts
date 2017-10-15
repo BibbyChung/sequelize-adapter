@@ -1,4 +1,4 @@
-import * as Sequelize from 'Sequelize';
+import * as Sequelize from 'sequelize';
 
 import { UnitOfWorkBase } from '../src/unitOfWorkBase';
 import { RepositoryBase } from '../src/repositoryBase';
