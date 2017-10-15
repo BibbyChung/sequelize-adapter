@@ -3,7 +3,6 @@ import * as Sequelize from 'Sequelize';
 import { UnitOfWorkBase } from '../src/unitOfWorkBase';
 import { RepositoryBase } from '../src/repositoryBase';
 import { UserRepository } from './userRepository';
-import { IUserEntity } from './IUserEntity';
 
 export class MyUnitOfWork extends UnitOfWorkBase {
 

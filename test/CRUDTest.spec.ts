@@ -55,7 +55,7 @@ describe('prepare the database to test', () => {
     assert.equal('Bibby_4', expectedROne.name);
     assert.equal(25, expectedROne.age);
 
-    //update items
+    // update items
     const uOne = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>(criteria);
     uOne.name = 'BBB';
     uOne.age = 33;
@@ -68,7 +68,7 @@ describe('prepare the database to test', () => {
     assert.equal('BBB', expectedUone.name);
     assert.equal(33, expectedUone.age);
 
-    //delete items
+    // delete items
     const data = await mydb.reps.user.getAll<IUserEntity, IUserEntity>();
     for (const item of data) {
       mydb.reps.user.remove(item);
