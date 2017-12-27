@@ -1,4 +1,7 @@
+import * as _ from 'lodash';
 import * as Sequelize from 'sequelize';
+
+import { IChangeObject } from './IChangeObject';
 import { RepositoryBase } from './repositoryBase';
 
 export abstract class UnitOfWorkBase {
@@ -47,7 +50,7 @@ export abstract class UnitOfWorkBase {
     this.db.close();
   }
 
-  async saveChange() {
+  private transactionExecute() {
     return this.db.transaction().then((t) => {
       const pArr = [];
 
@@ -73,6 +76,40 @@ export abstract class UnitOfWorkBase {
           throw err;
         });
     });
+  }
+
+  beforeSaveChange: (addedEntities: IChangeObject[], updatedEntities: IChangeObject[], removedEntities: IChangeObject[]) => void;
+  afterSaveChange: () => void;
+
+  async saveChange() {
+    if (this.beforeSaveChange) {
+      const addedEntities = _.chain(this.addedArr).map(a => {
+        const one: any = a.entity;
+        return {
+          before: null,
+          after: one,
+        };
+      }).value();
+      const updatedEntities = _.chain(this.updatedArr).map(a => {
+        const one: any = a;
+        return {
+          before: one._previousDataValues,
+          after: one.dataValues,
+        };
+      }).value();
+      const removedEntities = _.chain(this.removedArr).map(a => {
+        const one: any = a;
+        return {
+          before: one,
+          after: null,
+        };
+      }).value();
+      await this.beforeSaveChange(addedEntities, updatedEntities, removedEntities);
+    }
+    await this.transactionExecute();
+    if (this.afterSaveChange) {
+      await this.afterSaveChange();
+    }
   }
 
 

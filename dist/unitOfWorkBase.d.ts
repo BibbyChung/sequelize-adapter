@@ -1,5 +1,6 @@
 /// <reference types="sequelize" />
 import * as Sequelize from 'sequelize';
+import { IChangeObject } from './IChangeObject';
 import { RepositoryBase } from './repositoryBase';
 export declare abstract class UnitOfWorkBase {
     private addedArr;
@@ -12,5 +13,8 @@ export declare abstract class UnitOfWorkBase {
     __update<T>(rep: RepositoryBase<any>, entity: T): void;
     connectDb(): Promise<void>;
     close(): Promise<void>;
+    private transactionExecute();
+    beforeSaveChange: (addedEntities: IChangeObject[], updatedEntities: IChangeObject[], removedEntities: IChangeObject[]) => void;
+    afterSaveChange: () => void;
     saveChange(): Promise<void>;
 }

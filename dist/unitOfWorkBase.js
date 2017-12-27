@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const _ = require("lodash");
 class UnitOfWorkBase {
     constructor() {
         // constructor(public db: Sequelize.Sequelize) { }
@@ -66,29 +67,59 @@ class UnitOfWorkBase {
             this.db.close();
         });
     }
+    transactionExecute() {
+        return this.db.transaction().then((t) => {
+            const pArr = [];
+            for (const item of this.addedArr) {
+                pArr.push(item.rep.model.create(item.entity, { transaction: t }));
+            }
+            this.addedArr = [];
+            for (const item of this.updatedArr) {
+                pArr.push(item.save({ transaction: t }));
+            }
+            this.updatedArr = [];
+            for (const item of this.removedArr) {
+                pArr.push(item.destroy({ transaction: t }));
+            }
+            this.removedArr = [];
+            return Promise.all(pArr)
+                .then(() => t.commit())
+                .catch(err => {
+                t.rollback();
+                throw err;
+            });
+        });
+    }
     saveChange() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.db.transaction().then((t) => {
-                const pArr = [];
-                for (const item of this.addedArr) {
-                    pArr.push(item.rep.model.create(item.entity, { transaction: t }));
-                }
-                this.addedArr = [];
-                for (const item of this.updatedArr) {
-                    pArr.push(item.save({ transaction: t }));
-                }
-                this.updatedArr = [];
-                for (const item of this.removedArr) {
-                    pArr.push(item.destroy({ transaction: t }));
-                }
-                this.removedArr = [];
-                return Promise.all(pArr)
-                    .then(() => t.commit())
-                    .catch(err => {
-                    t.rollback();
-                    throw err;
-                });
-            });
+            if (this.beforeSaveChange) {
+                const addedEntities = _.chain(this.addedArr).map(a => {
+                    const one = a.entity;
+                    return {
+                        before: null,
+                        after: one,
+                    };
+                }).value();
+                const updatedEntities = _.chain(this.updatedArr).map(a => {
+                    const one = a;
+                    return {
+                        before: one._previousDataValues,
+                        after: one.dataValues,
+                    };
+                }).value();
+                const removedEntities = _.chain(this.removedArr).map(a => {
+                    const one = a;
+                    return {
+                        before: one,
+                        after: null,
+                    };
+                }).value();
+                yield this.beforeSaveChange(addedEntities, updatedEntities, removedEntities);
+            }
+            yield this.transactionExecute();
+            if (this.afterSaveChange) {
+                yield this.afterSaveChange();
+            }
         });
     }
 }

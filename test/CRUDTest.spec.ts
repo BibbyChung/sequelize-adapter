@@ -33,7 +33,81 @@ describe('prepare the database to test', () => {
     sandbox.restore();
   });
 
-  it('add items and update items and delete items in database', async () => {
+  it('test the hooks before writing to database', async () => {
+
+    // add items
+    for (let i = 0; i < 5; i += 1) {
+      mydb.reps.user.add({
+        id: uuid4(),
+        name: `Bibby_${i}`,
+        age: 21 + i,
+        birthday: new Date(),
+      });
+    }
+    await mydb.saveChange();
+
+    // add
+    mydb.reps.user.add({
+      id: uuid4(),
+      name: `Bibby_`,
+      age: 21,
+      birthday: new Date(),
+    });
+
+    // update
+    const one = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>({ where: { age: 21 } });
+    one.age = 99;
+    one.name = 'xxxx';
+    mydb.reps.user.update(one);
+
+    // delete
+    const two = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>({ where: { age: 22 } });
+    mydb.reps.user.remove(two);
+
+    mydb.beforeSaveChange = async (addedObjs, updatedObs, removedObjs) => {
+      // add
+      for (const item of addedObjs) {
+        assert.equal(item.before, null);
+        const user = item.after as IUserEntity;
+        assert.equal(user.name, 'Bibby_');
+        assert.equal(user.age, 21);
+      }
+      // update
+      for (const item of updatedObs) {
+        const before = item.before as IUserEntity;
+        const after = item.after as IUserEntity;
+        assert.equal(before.age, 21);
+        assert.equal(before.name, 'Bibby_0');
+        assert.equal(after.age, 99);
+        assert.equal(after.name, 'xxxx');
+      }
+
+      // delete
+      for (const item of removedObjs) {
+        const user = item.before as IUserEntity;
+        assert.equal(user.name, 'Bibby_1');
+        assert.equal(user.age, 22);
+        assert.equal(item.after, null);
+      }
+    };
+    await mydb.saveChange();
+  });
+
+  it('test the hooks after writing to database', async () => {
+    mydb.reps.user.add({
+      id: uuid4(),
+      name: `Bibby_`,
+      age: 21,
+      birthday: new Date(),
+    });
+
+    mydb.afterSaveChange = () => {
+      assert.isTrue(true);
+    };
+    await mydb.saveChange();
+  });
+
+  it('add items, update items and delete items in database', async () => {
 
     const criteria = { order: ['name'] };
 
