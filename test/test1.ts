@@ -22,6 +22,7 @@ const fun = async () => {
   uOne.name = 'Bibby_999999999999999';
   console.log(uOne._previousDataValues);
   console.log(uOne.dataValues);
+  console.log(uOne._modelOptions.name.plural);
   console.log('-----');
 };
 

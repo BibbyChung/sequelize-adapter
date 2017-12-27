@@ -67,6 +67,7 @@ describe('prepare the database to test', () => {
     mydb.beforeSaveChange = async (addedObjs, updatedObs, removedObjs) => {
       // add
       for (const item of addedObjs) {
+        assert.equal(item.tableName, 'users');
         assert.equal(item.before, null);
         const user = item.after as IUserEntity;
         assert.equal(user.name, 'Bibby_');
@@ -76,6 +77,7 @@ describe('prepare the database to test', () => {
       for (const item of updatedObs) {
         const before = item.before as IUserEntity;
         const after = item.after as IUserEntity;
+        assert.equal(item.tableName, 'users');
         assert.equal(before.age, 21);
         assert.equal(before.name, 'Bibby_0');
         assert.equal(after.age, 99);
@@ -85,6 +87,7 @@ describe('prepare the database to test', () => {
       // delete
       for (const item of removedObjs) {
         const user = item.before as IUserEntity;
+        assert.equal(item.tableName, 'users');
         assert.equal(user.name, 'Bibby_1');
         assert.equal(user.age, 22);
         assert.equal(item.after, null);

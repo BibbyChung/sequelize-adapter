@@ -86,6 +86,7 @@ export abstract class UnitOfWorkBase {
       const addedEntities = _.chain(this.addedArr).map(a => {
         const one: any = a.entity;
         return {
+          tableName: a.rep.tableName,
           before: null,
           after: one,
         };
@@ -93,6 +94,7 @@ export abstract class UnitOfWorkBase {
       const updatedEntities = _.chain(this.updatedArr).map(a => {
         const one: any = a;
         return {
+          tableName: a._modelOptions.name.plural,
           before: one._previousDataValues,
           after: one.dataValues,
         };
@@ -100,6 +102,7 @@ export abstract class UnitOfWorkBase {
       const removedEntities = _.chain(this.removedArr).map(a => {
         const one: any = a;
         return {
+          tableName: a._modelOptions.name.plural,
           before: one,
           after: null,
         };
