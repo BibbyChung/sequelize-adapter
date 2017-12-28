@@ -3,6 +3,8 @@ import * as Sequelize from 'sequelize';
 import { IChangeObject } from './IChangeObject';
 import { RepositoryBase } from './repositoryBase';
 export declare abstract class UnitOfWorkBase {
+    beforeSaveChange: (addedEntities: IChangeObject[], updatedEntities: IChangeObject[], removedEntities: IChangeObject[]) => void;
+    afterSaveChange: () => void;
     private addedArr;
     private removedArr;
     private updatedArr;
@@ -14,7 +16,7 @@ export declare abstract class UnitOfWorkBase {
     connectDb(): Promise<void>;
     close(): Promise<void>;
     private transactionExecute();
-    beforeSaveChange: (addedEntities: IChangeObject[], updatedEntities: IChangeObject[], removedEntities: IChangeObject[]) => void;
-    afterSaveChange: () => void;
+    private executeBeforeSaveChange();
+    private executeAfterSaveChange();
     saveChange(): Promise<void>;
 }

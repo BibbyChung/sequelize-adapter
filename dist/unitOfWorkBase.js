@@ -90,7 +90,7 @@ class UnitOfWorkBase {
             });
         });
     }
-    saveChange() {
+    executeBeforeSaveChange() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.beforeSaveChange) {
                 const addedEntities = _.chain(this.addedArr).map(a => {
@@ -119,10 +119,20 @@ class UnitOfWorkBase {
                 }).value();
                 yield this.beforeSaveChange(addedEntities, updatedEntities, removedEntities);
             }
-            yield this.transactionExecute();
+        });
+    }
+    executeAfterSaveChange() {
+        return __awaiter(this, void 0, void 0, function* () {
             if (this.afterSaveChange) {
                 yield this.afterSaveChange();
             }
+        });
+    }
+    saveChange() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.executeBeforeSaveChange();
+            yield this.transactionExecute();
+            yield this.executeAfterSaveChange();
         });
     }
 }

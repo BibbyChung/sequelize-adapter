@@ -8,6 +8,9 @@ export abstract class UnitOfWorkBase {
 
   // constructor(public db: Sequelize.Sequelize) { }
 
+  beforeSaveChange: (addedEntities: IChangeObject[], updatedEntities: IChangeObject[], removedEntities: IChangeObject[]) => void;
+  afterSaveChange: () => void;
+
   private addedArr: { rep: RepositoryBase<any>, entity: any }[] = [];
   private removedArr: any[] = [];
   private updatedArr: any[] = [];
@@ -78,10 +81,7 @@ export abstract class UnitOfWorkBase {
     });
   }
 
-  beforeSaveChange: (addedEntities: IChangeObject[], updatedEntities: IChangeObject[], removedEntities: IChangeObject[]) => void;
-  afterSaveChange: () => void;
-
-  async saveChange() {
+  private async executeBeforeSaveChange() {
     if (this.beforeSaveChange) {
       const addedEntities = _.chain(this.addedArr).map(a => {
         const one: any = a.entity;
@@ -109,10 +109,20 @@ export abstract class UnitOfWorkBase {
       }).value();
       await this.beforeSaveChange(addedEntities, updatedEntities, removedEntities);
     }
-    await this.transactionExecute();
+  }
+
+  private async executeAfterSaveChange() {
     if (this.afterSaveChange) {
       await this.afterSaveChange();
     }
+  }
+
+  async saveChange() {
+
+    await this.executeBeforeSaveChange();
+    await this.transactionExecute();
+    await this.executeAfterSaveChange();
+
   }
 
 
