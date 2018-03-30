@@ -82,39 +82,35 @@ export abstract class UnitOfWorkBase {
   }
 
   private async executeBeforeSaveChange() {
-    if (this.beforeSaveChange) {
-      const addedEntities = _.chain(this.addedArr).map(a => {
-        const one: any = a.entity;
-        return {
-          tableName: a.rep.tableName,
-          before: null,
-          after: one,
-        };
-      }).value();
-      const updatedEntities = _.chain(this.updatedArr).map(a => {
-        const one: any = a;
-        return {
-          tableName: a._modelOptions.name.plural,
-          before: one._previousDataValues,
-          after: one.dataValues,
-        };
-      }).value();
-      const removedEntities = _.chain(this.removedArr).map(a => {
-        const one: any = a;
-        return {
-          tableName: a._modelOptions.name.plural,
-          before: one,
-          after: null,
-        };
-      }).value();
-      await this.beforeSaveChange(addedEntities, updatedEntities, removedEntities);
-    }
+    const addedEntities = _.chain(this.addedArr).map(a => {
+      const one: any = a.entity;
+      return {
+        tableName: a.rep.tableName,
+        before: null,
+        after: one,
+      };
+    }).value();
+    const updatedEntities = _.chain(this.updatedArr).map(a => {
+      const one: any = a;
+      return {
+        tableName: a._modelOptions.name.plural,
+        before: one._previousDataValues,
+        after: one.dataValues,
+      };
+    }).value();
+    const removedEntities = _.chain(this.removedArr).map(a => {
+      const one: any = a;
+      return {
+        tableName: a._modelOptions.name.plural,
+        before: one,
+        after: null,
+      };
+    }).value();
+    await this.beforeSaveChange(addedEntities, updatedEntities, removedEntities);
   }
 
   private async executeAfterSaveChange() {
-    if (this.afterSaveChange) {
-      await this.afterSaveChange();
-    }
+    await this.afterSaveChange();
   }
 
   async saveChange() {
