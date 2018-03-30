@@ -103,11 +103,13 @@ describe('prepare the database to test', () => {
       age: 21,
       birthday: new Date(),
     });
-
-    mydb.afterSaveChange = () => {
-      assert.isTrue(true);
-    };
+    
+    const stubBeforeSaveChange = sandbox.stub(mydb, 'beforeSaveChange');
+    const stubAfterSaveChange = sandbox.stub(MyUnitOfWork.prototype, 'afterSaveChange');
     await mydb.saveChange();
+
+    assert.equal(1, stubBeforeSaveChange.callCount);
+    assert.equal(1, stubAfterSaveChange.callCount);
   });
 
   it('add items, update items and delete items in database', async () => {

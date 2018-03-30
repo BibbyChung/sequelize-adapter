@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize';
 
+import { IChangeObject } from '../src/IChangeObject';
 import { UnitOfWorkBase } from '../src/unitOfWorkBase';
-import { RepositoryBase } from '../src/repositoryBase';
 import { UserRepository } from './userRepository';
 
 export class MyUnitOfWork extends UnitOfWorkBase {
@@ -15,6 +15,13 @@ export class MyUnitOfWork extends UnitOfWorkBase {
   }
   set db(value: Sequelize.Sequelize) {
     MyUnitOfWork._db = value;
+  }
+
+  beforeSaveChange(addedEntities: IChangeObject[], updatedEntities: IChangeObject[], removedEntities: IChangeObject[]) {
+    
+  }
+  afterSaveChange() {
+    
   }
 
   constructor() {

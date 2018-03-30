@@ -8,15 +8,15 @@ export abstract class UnitOfWorkBase {
 
   // constructor(public db: Sequelize.Sequelize) { }
 
-  beforeSaveChange: (addedEntities: IChangeObject[], updatedEntities: IChangeObject[], removedEntities: IChangeObject[]) => void;
-  afterSaveChange: () => void;
+  abstract get db(): Sequelize.Sequelize;
+  abstract set db(value: Sequelize.Sequelize);
+
+  abstract beforeSaveChange(addedEntities: IChangeObject[], updatedEntities: IChangeObject[], removedEntities: IChangeObject[]): void;
+  abstract afterSaveChange(): void;
 
   private addedArr: { rep: RepositoryBase<any>, entity: any }[] = [];
   private removedArr: any[] = [];
   private updatedArr: any[] = [];
-
-  abstract get db(): Sequelize.Sequelize;
-  abstract set db(value: Sequelize.Sequelize);
 
   __reps = {};
 
