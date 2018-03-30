@@ -42,6 +42,13 @@ export class MyUnitOfWork extends UnitOfWorkBase {
     MyUnitOfWork._db = value;
   }
 
+  beforeSaveChange(addedEntities: IChangeObject[], updatedEntities: IChangeObject[], removedEntities: IChangeObject[]) {
+    // do something...
+  }
+  afterSaveChange() {
+    // do something...
+  }
+
   constructor() {
     super();
     this.init();

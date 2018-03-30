@@ -18,10 +18,10 @@ export class MyUnitOfWork extends UnitOfWorkBase {
   }
 
   beforeSaveChange(addedEntities: IChangeObject[], updatedEntities: IChangeObject[], removedEntities: IChangeObject[]) {
-    
+    // do something...
   }
   afterSaveChange() {
-    
+    // do something...
   }
 
   constructor() {
