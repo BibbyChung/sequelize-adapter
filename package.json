@@ -6,7 +6,8 @@
   "types": "./dist/_index.d.ts",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --opts mocha.opts",
-    "build": "gulp build"
+    "build": "gulp build",
+    "publish": "npm run test && npm run build && npm version patch && npm publish"
   },
   "author": "Bibby Chung",
   "keywords": [

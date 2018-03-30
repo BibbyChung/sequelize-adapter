@@ -92,40 +92,36 @@ class UnitOfWorkBase {
     }
     executeBeforeSaveChange() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.beforeSaveChange) {
-                const addedEntities = _.chain(this.addedArr).map(a => {
-                    const one = a.entity;
-                    return {
-                        tableName: a.rep.tableName,
-                        before: null,
-                        after: one,
-                    };
-                }).value();
-                const updatedEntities = _.chain(this.updatedArr).map(a => {
-                    const one = a;
-                    return {
-                        tableName: a._modelOptions.name.plural,
-                        before: one._previousDataValues,
-                        after: one.dataValues,
-                    };
-                }).value();
-                const removedEntities = _.chain(this.removedArr).map(a => {
-                    const one = a;
-                    return {
-                        tableName: a._modelOptions.name.plural,
-                        before: one,
-                        after: null,
-                    };
-                }).value();
-                yield this.beforeSaveChange(addedEntities, updatedEntities, removedEntities);
-            }
+            const addedEntities = _.chain(this.addedArr).map(a => {
+                const one = a.entity;
+                return {
+                    tableName: a.rep.tableName,
+                    before: null,
+                    after: one,
+                };
+            }).value();
+            const updatedEntities = _.chain(this.updatedArr).map(a => {
+                const one = a;
+                return {
+                    tableName: a._modelOptions.name.plural,
+                    before: one._previousDataValues,
+                    after: one.dataValues,
+                };
+            }).value();
+            const removedEntities = _.chain(this.removedArr).map(a => {
+                const one = a;
+                return {
+                    tableName: a._modelOptions.name.plural,
+                    before: one,
+                    after: null,
+                };
+            }).value();
+            yield this.beforeSaveChange(addedEntities, updatedEntities, removedEntities);
         });
     }
     executeAfterSaveChange() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.afterSaveChange) {
-                yield this.afterSaveChange();
-            }
+            yield this.afterSaveChange();
         });
     }
     saveChange() {
