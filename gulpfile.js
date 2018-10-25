@@ -4,7 +4,6 @@ let gulp = require("gulp");
 let shell = require("gulp-shell");
 let merge = require("merge-stream");
 let rimraf = require("rimraf");
-let runSequence = require("run-sequence");
 let through = require('through2');
 
 let ts = require("gulp-typescript");
@@ -110,13 +109,10 @@ gulp.task("create_ts_definitions", shell.task([
 
 //----------------------------------------------------------------------
 
-gulp.task('build', (cb) => {
-  runSequence(
-    "clean",
-    [
+gulp.task("build",
+  gulp.series("clean",
+    gulp.parallel(
       "ts_compile_dist",
       "tsd_compile_dist"
-    ],
-    cb
-  );
-});
+    ))
+);
