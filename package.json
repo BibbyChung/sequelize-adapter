@@ -9,13 +9,19 @@
     "build": "gulp build"
   },
   "author": "Bibby Chung",
+  "homepage": "https://github.com/BibbyChung/sequelize-adapter",
+  "bugs": "https://github.com/BibbyChung/sequelize-adapter/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BibbyChung/sequelize-adapter.git"
+  },
   "keywords": [
     "sequelize",
     "mysql",
     "sqlite",
     "unitofwork"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/chai": "^4.1.2",
     "@types/lodash": "^4.14.106",
