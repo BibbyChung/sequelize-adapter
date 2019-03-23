@@ -177,6 +177,12 @@ const data1 = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>({
 
 ```
 
+### Project UP
+
+```shell
+docker run -it --rm -v $(PWD):/app -w /app teracy/angular-cli bash
+```
+
 ### JavaScript 
 (later...)
 
