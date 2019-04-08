@@ -18,7 +18,7 @@ const fun = async () => {
   await mydb.saveChange();
 
   const criteria = { order: ['name'] };
-  const uOne:any = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>(criteria);
+  const uOne: any = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>(criteria);
   uOne.name = 'Bibby_999999999999999';
   console.log(uOne._previousDataValues);
   console.log(uOne.dataValues);

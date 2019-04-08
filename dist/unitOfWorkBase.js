@@ -8,32 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const _ = require("lodash");
 class UnitOfWorkBase {
     constructor() {
-        // constructor(public db: Sequelize.Sequelize) { }
         this.addedArr = [];
         this.removedArr = [];
         this.updatedArr = [];
         this.__reps = {};
-        // async close() {
-        //   if (this.isInMemory)
-        //     await mockgoose.helper.reset();
-        //   await new Promise<void>((resolve, reject) => {
-        //     mongoose.disconnect((err) => {
-        //       if (err) {
-        //         reject(err);
-        //         return;
-        //       }
-        //       resolve();
-        //     });
-        //   });
-        // }
-        // async reset() {
-        //   if (!this.isInMemory)
-        //     throw new Error('please set the property "isInMemory" to true');
-        //   await mockgoose.helper.reset();
-        // }
     }
     __add(rep, entity) {
         this.addedArr.push({ rep, entity });
@@ -68,10 +48,11 @@ class UnitOfWorkBase {
         });
     }
     transactionExecute() {
-        return this.db.transaction().then((t) => {
+        return this.db.transaction({ autocommit: false }).then(t => {
             const pArr = [];
             for (const item of this.addedArr) {
-                pArr.push(item.rep.model.create(item.entity, { transaction: t }));
+                const opt = { transaction: t };
+                pArr.push(item.rep.model.create(item.entity, opt));
             }
             this.addedArr = [];
             for (const item of this.updatedArr) {
@@ -92,30 +73,30 @@ class UnitOfWorkBase {
     }
     executeBeforeSaveChange() {
         return __awaiter(this, void 0, void 0, function* () {
-            const addedEntities = _.chain(this.addedArr).map(a => {
+            const addedEntities = this.addedArr.map(a => {
                 const one = a.entity;
                 return {
                     tableName: a.rep.tableName,
                     before: null,
                     after: one,
                 };
-            }).value();
-            const updatedEntities = _.chain(this.updatedArr).map(a => {
+            });
+            const updatedEntities = this.updatedArr.map(a => {
                 const one = a;
                 return {
                     tableName: a._modelOptions.name.plural,
                     before: one._previousDataValues,
                     after: one.dataValues,
                 };
-            }).value();
-            const removedEntities = _.chain(this.removedArr).map(a => {
+            });
+            const removedEntities = this.removedArr.map(a => {
                 const one = a;
                 return {
                     tableName: a._modelOptions.name.plural,
                     before: one,
                     after: null,
                 };
-            }).value();
+            });
             yield this.beforeSaveChange(addedEntities, updatedEntities, removedEntities);
         });
     }

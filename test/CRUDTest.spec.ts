@@ -49,7 +49,7 @@ describe('prepare the database to test', () => {
     // add
     mydb.reps.user.add({
       id: uuid4(),
-      name: `Bibby_`,
+      name: 'Bibby_',
       age: 21,
       birthday: new Date(),
     });
@@ -99,11 +99,11 @@ describe('prepare the database to test', () => {
   it('test the hooks after writing to database', async () => {
     mydb.reps.user.add({
       id: uuid4(),
-      name: `Bibby_`,
+      name: 'Bibby_',
       age: 21,
       birthday: new Date(),
     });
-    
+
     const stubBeforeSaveChange = sandbox.stub(mydb, 'beforeSaveChange');
     const stubAfterSaveChange = sandbox.stub(MyUnitOfWork.prototype, 'afterSaveChange');
     await mydb.saveChange();
@@ -138,7 +138,7 @@ describe('prepare the database to test', () => {
     const uOne = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>(criteria);
     uOne.name = 'BBB';
     uOne.age = 33;
-    uOne.brithday = new Date('2011-10-10');
+    uOne.birthday = new Date('2011-10-10');
     mydb.reps.user.update(uOne);
     await mydb.saveChange();
 
@@ -160,4 +160,3 @@ describe('prepare the database to test', () => {
   });
 
 });
-

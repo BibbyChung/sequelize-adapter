@@ -1,14 +1,17 @@
-import * as Sequelize from 'sequelize';
+import { BuildOptions, CountOptions, FindOptions, Model, ModelAttributes } from 'sequelize';
 import { UnitOfWorkBase } from './unitOfWorkBase';
 
 export abstract class RepositoryBase<T> {
 
   abstract get tableName(): string;
 
-  abstract get schema(): Sequelize.DefineAttributes;
+  abstract get schema(): ModelAttributes;
 
   get model() {
-    return this.unitOfWork.db.define(this.tableName, this.schema, this.tableOption);
+    const obj: any = this.unitOfWork.db.define(this.tableName, this.schema, this.tableOption);
+    return obj as typeof Model & {
+      new(values?: object, options?: BuildOptions): T;
+    };
   }
 
   private get tableOption() {
@@ -35,30 +38,31 @@ export abstract class RepositoryBase<T> {
     await this.model.sync();
   }
 
-  add<T>(entity: T) {
-    this.unitOfWork.__add(this, entity);
+  add(entity: T) {
+    this.unitOfWork.__add<T>(this, entity);
   }
 
-  remove<T>(entity: T) {
-    this.unitOfWork.__remove(this, entity);
+  remove(entity: T) {
+    this.unitOfWork.__remove<T>(this, entity);
   }
 
-  update<T>(entity: T) {
-    this.unitOfWork.__update(this, entity);
+  update(entity: T) {
+    this.unitOfWork.__update<T>(this, entity);
   }
 
-  getCount<TNew, TCustomAttributes>(options?: Sequelize.CountOptions) {
-    return this.model.count(options) as any as Promise<number>;
+  async getCount(options?: CountOptions) {
+    const nu = await this.model.count(options);
+    return nu;
   }
 
-  getAll<TNew, TCustomAttributes>(options?: Sequelize.FindOptions<T & TCustomAttributes>) {
-    return this.model.findAll(options) as any as Promise<TNew[]>;
+  async getAll<TNew, TCustomAttributes>(options?: FindOptions) {
+    const data: any = await this.model.findAll(options);
+    return data as TCustomAttributes[];
   }
 
-  async getFirstOrDefault<TNew, TCustomAttributes>(options?: Sequelize.FindOptions<T & TCustomAttributes>) {
-    const data = await this.getAll<TNew, TCustomAttributes>(options);
-    return data[0];
+  async getFirstOrDefault<TNew, TCustomAttributes>(options?: FindOptions) {
+    const one: any = await this.model.findOne(options);
+    return one as TCustomAttributes;
   }
 
 }
-

@@ -1,5 +1,4 @@
-import * as Sequelize from 'sequelize';
-
+import { DataTypes, ModelAttributes } from 'sequelize';
 import { RepositoryBase } from '../src/repositoryBase';
 import { UnitOfWorkBase } from '../src/unitOfWorkBase';
 import { IUserEntity } from './IUserEntity';
@@ -14,22 +13,22 @@ export class UserRepository extends RepositoryBase<IUserEntity> {
     super(unitOfWork);
   }
 
-  get schema(): Sequelize.DefineAttributes {
+  get schema(): ModelAttributes {
     return {
       id: {
-        type: Sequelize.UUID,
+        type: DataTypes.UUID,
         primaryKey: true,
       },
       name: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
       },
       age: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       birthday: {
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
         allowNull: false,
       },
     };

@@ -1,19 +1,18 @@
-import * as Sequelize from 'sequelize';
-
+import { Sequelize } from 'sequelize';
 import { IChangeObject } from '../src/IChangeObject';
 import { UnitOfWorkBase } from '../src/unitOfWorkBase';
 import { UserRepository } from './userRepository';
 
 export class MyUnitOfWork extends UnitOfWorkBase {
 
-  private static _db: Sequelize.Sequelize;
-  get db(): Sequelize.Sequelize {
+  private static _db: Sequelize;
+  get db(): Sequelize {
     if (!MyUnitOfWork._db) {
       this.connectDb();
     }
     return MyUnitOfWork._db;
   }
-  set db(value: Sequelize.Sequelize) {
+  set db(value: Sequelize) {
     MyUnitOfWork._db = value;
   }
 
@@ -43,17 +42,15 @@ export class MyUnitOfWork extends UnitOfWorkBase {
       type: 'sqlite', // 'mysql'
     };
 
-    const options = {
-      host: setting.host,
-      dialect: setting.type,
+    this.db = new Sequelize(setting.dbName, setting.username, setting.password, {
+      dialect: 'sqlite',
       pool: {
         max: 5,
         min: 0,
+        acquire: 30000,
         idle: 10000,
       },
-    };
-
-    this.db = new Sequelize(setting.dbName, setting.username, setting.password, options);
+    });
     this.__reps = this.reps;
   }
 

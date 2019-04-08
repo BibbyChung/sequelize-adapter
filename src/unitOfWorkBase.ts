@@ -1,17 +1,17 @@
-import * as _ from 'lodash';
-import * as Sequelize from 'sequelize';
-
+import { Sequelize } from 'sequelize';
 import { IChangeObject } from './IChangeObject';
 import { RepositoryBase } from './repositoryBase';
 
 export abstract class UnitOfWorkBase {
 
-  // constructor(public db: Sequelize.Sequelize) { }
+  abstract get db(): Sequelize;
+  abstract set db(value: Sequelize);
 
-  abstract get db(): Sequelize.Sequelize;
-  abstract set db(value: Sequelize.Sequelize);
-
-  abstract beforeSaveChange(addedEntities: IChangeObject[], updatedEntities: IChangeObject[], removedEntities: IChangeObject[]): void;
+  abstract beforeSaveChange(
+    addedEntities: IChangeObject[],
+    updatedEntities: IChangeObject[],
+    removedEntities: IChangeObject[],
+  ): void;
   abstract afterSaveChange(): void;
 
   private addedArr: { rep: RepositoryBase<any>, entity: any }[] = [];
@@ -20,15 +20,15 @@ export abstract class UnitOfWorkBase {
 
   __reps = {};
 
-  __add<T>(rep: RepositoryBase<any>, entity: T) {
+  __add<T>(rep: RepositoryBase<T>, entity: T) {
     this.addedArr.push({ rep, entity });
   }
 
-  __remove<T>(rep: RepositoryBase<any>, entity: T) {
+  __remove<T>(rep: RepositoryBase<T>, entity: T) {
     this.removedArr.push(entity);
   }
 
-  __update<T>(rep: RepositoryBase<any>, entity: T) {
+  __update<T>(rep: RepositoryBase<T>, entity: T) {
     this.updatedArr.push(entity);
   }
 
@@ -54,11 +54,12 @@ export abstract class UnitOfWorkBase {
   }
 
   private transactionExecute() {
-    return this.db.transaction().then((t) => {
+    return this.db.transaction({ autocommit: false }).then(t => {
       const pArr = [];
 
       for (const item of this.addedArr) {
-        pArr.push(item.rep.model.create(item.entity, { transaction: t }));
+        const opt: any = { transaction: t };
+        pArr.push(item.rep.model.create(item.entity, opt));
       }
       this.addedArr = [];
 
@@ -82,30 +83,30 @@ export abstract class UnitOfWorkBase {
   }
 
   private async executeBeforeSaveChange() {
-    const addedEntities = _.chain(this.addedArr).map(a => {
+    const addedEntities = this.addedArr.map(a => {
       const one: any = a.entity;
       return {
         tableName: a.rep.tableName,
         before: null,
         after: one,
       };
-    }).value();
-    const updatedEntities = _.chain(this.updatedArr).map(a => {
+    });
+    const updatedEntities = this.updatedArr.map(a => {
       const one: any = a;
       return {
         tableName: a._modelOptions.name.plural,
         before: one._previousDataValues,
         after: one.dataValues,
       };
-    }).value();
-    const removedEntities = _.chain(this.removedArr).map(a => {
+    });
+    const removedEntities = this.removedArr.map(a => {
       const one: any = a;
       return {
         tableName: a._modelOptions.name.plural,
         before: one,
         after: null,
       };
-    }).value();
+    });
     await this.beforeSaveChange(addedEntities, updatedEntities, removedEntities);
   }
 
@@ -120,35 +121,5 @@ export abstract class UnitOfWorkBase {
     await this.executeAfterSaveChange();
 
   }
-
-
-
-  // async close() {
-
-  //   if (this.isInMemory)
-  //     await mockgoose.helper.reset();
-
-  //   await new Promise<void>((resolve, reject) => {
-
-  //     mongoose.disconnect((err) => {
-  //       if (err) {
-  //         reject(err);
-  //         return;
-  //       }
-  //       resolve();
-  //     });
-
-  //   });
-
-  // }
-
-  // async reset() {
-
-  //   if (!this.isInMemory)
-  //     throw new Error('please set the property "isInMemory" to true');
-
-  //   await mockgoose.helper.reset();
-
-  // }
 
 }

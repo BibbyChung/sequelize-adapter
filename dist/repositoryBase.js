@@ -13,7 +13,8 @@ class RepositoryBase {
         this.unitOfWork = unitOfWork;
     }
     get model() {
-        return this.unitOfWork.db.define(this.tableName, this.schema, this.tableOption);
+        const obj = this.unitOfWork.db.define(this.tableName, this.schema, this.tableOption);
+        return obj;
     }
     get tableOption() {
         return {
@@ -47,15 +48,21 @@ class RepositoryBase {
         this.unitOfWork.__update(this, entity);
     }
     getCount(options) {
-        return this.model.count(options);
+        return __awaiter(this, void 0, void 0, function* () {
+            const nu = yield this.model.count(options);
+            return nu;
+        });
     }
     getAll(options) {
-        return this.model.findAll(options);
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = yield this.model.findAll(options);
+            return data;
+        });
     }
     getFirstOrDefault(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.getAll(options);
-            return data[0];
+            const one = yield this.model.findOne(options);
+            return one;
         });
     }
 }
