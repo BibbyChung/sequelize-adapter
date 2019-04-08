@@ -24,21 +24,21 @@ create your classes what you need.
 ```javascript
 
 // myUnitOfWork.ts
-import * as Sequelize from 'sequelize';
+import { Sequelize } from 'sequelize';
+import { IChangeObject } from '../src/IChangeObject';
 import { UnitOfWorkBase } from '../src/unitOfWorkBase';
-import { RepositoryBase } from '../src/repositoryBase';
 import { UserRepository } from './userRepository';
 
 export class MyUnitOfWork extends UnitOfWorkBase {
 
-  private static _db: Sequelize.Sequelize;
-  get db(): Sequelize.Sequelize {
+  private static _db: Sequelize;
+  get db(): Sequelize {
     if (!MyUnitOfWork._db) {
       this.connectDb();
     }
     return MyUnitOfWork._db;
   }
-  set db(value: Sequelize.Sequelize) {
+  set db(value: Sequelize) {
     MyUnitOfWork._db = value;
   }
 
@@ -65,20 +65,18 @@ export class MyUnitOfWork extends UnitOfWorkBase {
       dbName: 'test_db',
       username: 'root',
       password: '1234',
-      type: 'mysql',
+      type: 'sqlite', // 'mysql'
     };
 
-    const options = {
-      host: setting.host,
-      dialect: setting.type,
+    this.db = new Sequelize(setting.dbName, setting.username, setting.password, {
+      dialect: 'sqlite',
       pool: {
         max: 5,
         min: 0,
+        acquire: 30000,
         idle: 10000,
       },
-    };
-
-    this.db = new Sequelize(setting.dbName, setting.username, setting.password, options);
+    });
     this.__reps = this.reps;
   }
 
@@ -86,8 +84,7 @@ export class MyUnitOfWork extends UnitOfWorkBase {
 
 
 // userRepository.ts
-import * as Sequelize from 'sequelize';
-
+import { DataTypes, ModelAttributes } from 'sequelize';
 import { RepositoryBase } from '../src/repositoryBase';
 import { UnitOfWorkBase } from '../src/unitOfWorkBase';
 import { IUserEntity } from './IUserEntity';
@@ -102,22 +99,22 @@ export class UserRepository extends RepositoryBase<IUserEntity> {
     super(unitOfWork);
   }
 
-  get schema(): Sequelize.DefineAttributes {
+  get schema(): ModelAttributes {
     return {
       id: {
-        type: Sequelize.UUID,
+        type: DataTypes.UUID,
         primaryKey: true,
       },
       name: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
       },
       age: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       birthday: {
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
         allowNull: false,
       },
     };
@@ -130,7 +127,7 @@ export interface IUserEntity {
   id: string;
   name: string;
   age: number;
-  brithday: Date;
+  birthday: Date;
 }
 
 ```
