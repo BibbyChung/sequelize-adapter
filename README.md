@@ -25,8 +25,7 @@ create your classes what you need.
 
 // myUnitOfWork.ts
 import { Sequelize } from 'sequelize';
-import { IChangeObject } from '../src/IChangeObject';
-import { UnitOfWorkBase } from '../src/unitOfWorkBase';
+import { RepositoryBase, UnitOfWorkBase, IChangeObject } from 'sequelize-adapter';
 import { UserRepository } from './userRepository';
 
 export class MyUnitOfWork extends UnitOfWorkBase {
@@ -42,7 +41,7 @@ export class MyUnitOfWork extends UnitOfWorkBase {
     MyUnitOfWork._db = value;
   }
 
-  beforeSaveChange(addedEntities: IChangeObject[], updatedEntities: IChangeObject[], removedEntities: IChangeObject[]) {
+  beforeSaveChange(addedEntities: IChangeObject[], updatedEntities: IChangeObject[], deletedEntities: IChangeObject[]) {
     // do something...
   }
   afterSaveChange() {
@@ -85,8 +84,7 @@ export class MyUnitOfWork extends UnitOfWorkBase {
 
 // userRepository.ts
 import { DataTypes, ModelAttributes } from 'sequelize';
-import { RepositoryBase } from '../src/repositoryBase';
-import { UnitOfWorkBase } from '../src/unitOfWorkBase';
+import { RepositoryBase, UnitOfWorkBase, IChangeObject } from 'sequelize-adapter';
 import { IUserEntity } from './IUserEntity';
 
 export class UserRepository extends RepositoryBase<IUserEntity> {
@@ -162,7 +160,7 @@ await mydb.saveChange();
 const myDb = new UnitOfWork();
 const data = await mydb.reps.user.getAll<IUserEntity, IUserEntity>({ where: {id: 'xxxxx'} });
 for (const item of data) {
-  mydb.reps.user.remove(item);
+  mydb.reps.user.delete(item);
 }
 await mydb.saveChange();
 
@@ -174,7 +172,7 @@ const data1 = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>({
 
 ```
 
-### Project UP
+### Project Up
 
 ```shell
 docker run -it --rm -v $(PWD):/app -w /app teracy/angular-cli bash
@@ -192,6 +190,3 @@ make workspace-up
 
 ## References
 - http://docs.sequelizejs.com/
-
-
-

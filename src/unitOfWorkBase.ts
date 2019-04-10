@@ -10,12 +10,12 @@ export abstract class UnitOfWorkBase {
   abstract beforeSaveChange(
     addedEntities: IChangeObject[],
     updatedEntities: IChangeObject[],
-    removedEntities: IChangeObject[],
+    deletedEntities: IChangeObject[],
   ): void;
   abstract afterSaveChange(): void;
 
   private addedArr: { rep: RepositoryBase<any>, entity: any }[] = [];
-  private removedArr: any[] = [];
+  private deletedArr: any[] = [];
   private updatedArr: any[] = [];
 
   __reps = {};
@@ -24,8 +24,8 @@ export abstract class UnitOfWorkBase {
     this.addedArr.push({ rep, entity });
   }
 
-  __remove<T>(rep: RepositoryBase<T>, entity: T) {
-    this.removedArr.push(entity);
+  __delete<T>(rep: RepositoryBase<T>, entity: T) {
+    this.deletedArr.push(entity);
   }
 
   __update<T>(rep: RepositoryBase<T>, entity: T) {
@@ -68,10 +68,10 @@ export abstract class UnitOfWorkBase {
       }
       this.updatedArr = [];
 
-      for (const item of this.removedArr) {
+      for (const item of this.deletedArr) {
         pArr.push(item.destroy({ transaction: t }));
       }
-      this.removedArr = [];
+      this.deletedArr = [];
 
       return Promise.all(pArr)
         .then(() => t.commit())
@@ -99,7 +99,7 @@ export abstract class UnitOfWorkBase {
         after: one.dataValues,
       };
     });
-    const removedEntities = this.removedArr.map(a => {
+    const deletedEntities = this.deletedArr.map(a => {
       const one: any = a;
       return {
         tableName: a._modelOptions.name.plural,
@@ -107,7 +107,7 @@ export abstract class UnitOfWorkBase {
         after: null,
       };
     });
-    await this.beforeSaveChange(addedEntities, updatedEntities, removedEntities);
+    await this.beforeSaveChange(addedEntities, updatedEntities, deletedEntities);
   }
 
   private async executeAfterSaveChange() {

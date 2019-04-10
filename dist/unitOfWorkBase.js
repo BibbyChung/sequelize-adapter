@@ -11,15 +11,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 class UnitOfWorkBase {
     constructor() {
         this.addedArr = [];
-        this.removedArr = [];
+        this.deletedArr = [];
         this.updatedArr = [];
         this.__reps = {};
     }
     __add(rep, entity) {
         this.addedArr.push({ rep, entity });
     }
-    __remove(rep, entity) {
-        this.removedArr.push(entity);
+    __delete(rep, entity) {
+        this.deletedArr.push(entity);
     }
     __update(rep, entity) {
         this.updatedArr.push(entity);
@@ -59,10 +59,10 @@ class UnitOfWorkBase {
                 pArr.push(item.save({ transaction: t }));
             }
             this.updatedArr = [];
-            for (const item of this.removedArr) {
+            for (const item of this.deletedArr) {
                 pArr.push(item.destroy({ transaction: t }));
             }
-            this.removedArr = [];
+            this.deletedArr = [];
             return Promise.all(pArr)
                 .then(() => t.commit())
                 .catch(err => {
@@ -89,7 +89,7 @@ class UnitOfWorkBase {
                     after: one.dataValues,
                 };
             });
-            const removedEntities = this.removedArr.map(a => {
+            const deletedEntities = this.deletedArr.map(a => {
                 const one = a;
                 return {
                     tableName: a._modelOptions.name.plural,
@@ -97,7 +97,7 @@ class UnitOfWorkBase {
                     after: null,
                 };
             });
-            yield this.beforeSaveChange(addedEntities, updatedEntities, removedEntities);
+            yield this.beforeSaveChange(addedEntities, updatedEntities, deletedEntities);
         });
     }
     executeAfterSaveChange() {

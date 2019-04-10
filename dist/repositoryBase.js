@@ -41,8 +41,8 @@ class RepositoryBase {
     add(entity) {
         this.unitOfWork.__add(this, entity);
     }
-    remove(entity) {
-        this.unitOfWork.__remove(this, entity);
+    delete(entity) {
+        this.unitOfWork.__delete(this, entity);
     }
     update(entity) {
         this.unitOfWork.__update(this, entity);

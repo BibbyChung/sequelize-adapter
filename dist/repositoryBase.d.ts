@@ -9,7 +9,7 @@ export declare abstract class RepositoryBase<T> {
     constructor(unitOfWork: UnitOfWorkBase);
     syncModel(): Promise<void>;
     add(entity: T): void;
-    remove(entity: T): void;
+    delete(entity: T): void;
     update(entity: T): void;
     getCount(options?: CountOptions): Promise<number>;
     getAll<TNew, TCustomAttributes>(options?: FindOptions): Promise<TCustomAttributes[]>;

@@ -62,9 +62,9 @@ describe('prepare the database to test', () => {
 
     // delete
     const two = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>({ where: { age: 22 } });
-    mydb.reps.user.remove(two);
+    mydb.reps.user.delete(two);
 
-    mydb.beforeSaveChange = async (addedObjs, updatedObs, removedObjs) => {
+    mydb.beforeSaveChange = async (addedObjs, updatedObs, deletedObjs) => {
       // add
       for (const item of addedObjs) {
         assert.equal(item.tableName, 'users');
@@ -85,7 +85,7 @@ describe('prepare the database to test', () => {
       }
 
       // delete
-      for (const item of removedObjs) {
+      for (const item of deletedObjs) {
         const user = item.before as IUserEntity;
         assert.equal(item.tableName, 'users');
         assert.equal(user.name, 'Bibby_1');
@@ -150,7 +150,7 @@ describe('prepare the database to test', () => {
     // delete items
     const data = await mydb.reps.user.getAll<IUserEntity, IUserEntity>();
     for (const item of data) {
-      mydb.reps.user.remove(item);
+      mydb.reps.user.delete(item);
     }
     await mydb.saveChange();
 

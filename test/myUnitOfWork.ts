@@ -16,7 +16,7 @@ export class MyUnitOfWork extends UnitOfWorkBase {
     MyUnitOfWork._db = value;
   }
 
-  beforeSaveChange(addedEntities: IChangeObject[], updatedEntities: IChangeObject[], removedEntities: IChangeObject[]) {
+  beforeSaveChange(addedEntities: IChangeObject[], updatedEntities: IChangeObject[], deletedEntities: IChangeObject[]) {
     // do something...
   }
   afterSaveChange() {

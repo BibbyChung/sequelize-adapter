@@ -42,8 +42,8 @@ export abstract class RepositoryBase<T> {
     this.unitOfWork.__add<T>(this, entity);
   }
 
-  remove(entity: T) {
-    this.unitOfWork.__remove<T>(this, entity);
+  delete(entity: T) {
+    this.unitOfWork.__delete<T>(this, entity);
   }
 
   update(entity: T) {
