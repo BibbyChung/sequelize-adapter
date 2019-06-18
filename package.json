@@ -1,6 +1,6 @@
 {
   "name": "sequelize-adapter",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Use Unit Of Wrok pattern to wrap sequelize up and make sequelize easy to use.",
   "main": "./dist/_index.js",
   "types": "./dist/_index.d.ts",
@@ -56,6 +56,6 @@
     "uuid": "^3.3.2"
   },
   "dependencies": {
-    "sequelize": "^5.2.13"
+    "sequelize": "^5.8.10"
   }
 }
