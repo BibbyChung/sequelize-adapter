@@ -2,6 +2,7 @@ import * as uuid4 from 'uuid/v4';
 
 import { IUserEntity } from './IUserEntity';
 import { MyUnitOfWork } from './myUnitOfWork';
+import { QueryTypes } from 'sequelize';
 
 const fun = async () => {
   const mydb = new MyUnitOfWork();
@@ -23,6 +24,20 @@ const fun = async () => {
   console.log(uOne._previousDataValues);
   console.log(uOne.dataValues);
   console.log(uOne._modelOptions.name.plural);
+  console.log('-----');
+
+  const q = `
+    select *
+    from users u
+    where u.age = :age
+  `;
+  const data: IUserEntity = await mydb.query(q, {
+    replacements: {
+      age: 22
+    },
+    type: QueryTypes.SELECT
+  });
+  console.log(data);
   console.log('-----');
 };
 

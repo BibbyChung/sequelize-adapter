@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import * as sinon from 'sinon';
 import * as uuid4 from 'uuid/v4';
 
+import { QueryTypes } from 'sequelize';
 import { MyUnitOfWork } from './myUnitOfWork';
 import { IUserEntity } from './IUserEntity';
 
@@ -156,6 +157,41 @@ describe('prepare the database to test', () => {
 
     const expectedD = await mydb.reps.user.getAll<IUserEntity, IUserEntity>();
     assert.equal(0, expectedD.length);
+
+  });
+
+  it('test query method', async () => {
+
+    // add items
+    for (let i = 0; i < 5; i += 1) {
+      mydb.reps.user.add({
+        id: uuid4(),
+        name: `Bibby_${i}`,
+        age: 21 + i,
+        birthday: new Date(),
+      });
+    }
+    await mydb.saveChange();
+
+    // query by sql statement
+
+    const q = `
+      select *
+      from users u
+      where u.age = :age
+    `;
+    const data = await mydb.query(q, {
+      replacements: {
+        age: 22
+      },
+      type: QueryTypes.SELECT
+    });
+
+    const user: IUserEntity = data[0] as IUserEntity;
+
+    assert.equal(1, data.length);
+    assert.equal('Bibby_1', user.name);
+    assert.equal(22, user.age);
 
   });
 

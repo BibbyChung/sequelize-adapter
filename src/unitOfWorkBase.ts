@@ -1,4 +1,4 @@
-import { Sequelize } from 'sequelize';
+import { QueryOptionsWithType, QueryTypes, Sequelize } from 'sequelize';
 import { IChangeObject } from './IChangeObject';
 import { RepositoryBase } from './repositoryBase';
 
@@ -51,6 +51,22 @@ export abstract class UnitOfWorkBase {
 
   async close() {
     this.db.close();
+  }
+
+  async query(
+    sql: string | { query: string; values: unknown[] },
+    options: QueryOptionsWithType<
+      QueryTypes.UPDATE |
+      QueryTypes.BULKUPDATE |
+      QueryTypes.INSERT |
+      QueryTypes.UPSERT |
+      QueryTypes.DELETE |
+      QueryTypes.BULKDELETE |
+      QueryTypes.SHOWTABLES |
+      QueryTypes.DESCRIBE |
+      QueryTypes.SELECT
+    >): Promise<any> {
+    return await this.db.query(sql, options);
   }
 
   private transactionExecute() {
