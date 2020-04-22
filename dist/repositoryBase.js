@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -18,18 +19,9 @@ class RepositoryBase {
     }
     get tableOption() {
         return {
-            // don't add the timestamp attributes (updatedAt, createdAt)
             timestamps: false,
-            // don't delete database entries but set the newly added attribute deletedAt
-            // to the current date (when deletion was done). paranoid will only work if
-            // timestamps are enabled
             paranoid: true,
-            // don't use camelcase for automatically added attributes but underscore style
-            // so updatedAt will be updated_at
             underscored: false,
-            // disable the modification of tablenames; By default, sequelize will automatically
-            // transform all passed model names (first parameter of define) into plural.
-            // if you don't want that, set the following
             freezeTableName: true,
         };
     }

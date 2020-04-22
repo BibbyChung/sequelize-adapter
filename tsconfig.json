@@ -1,12 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "target": "ES2015",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "declaration": true,
+    "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "isolatedModules": false
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "diagnostics": true,
+    "removeComments": true
   },
   "exclude": [
     "node_modules"

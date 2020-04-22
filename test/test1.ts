@@ -1,4 +1,4 @@
-import * as uuid4 from 'uuid/v4';
+import uuid4 from 'uuid/v4';
 
 import { IUserEntity } from './IUserEntity';
 import { MyUnitOfWork } from './myUnitOfWork';

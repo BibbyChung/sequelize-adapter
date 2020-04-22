@@ -1,15 +1,21 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const util_1 = require("./util");
 class UnitOfWorkBase {
     constructor() {
+        this.retryingOption = {
+            count: 3,
+            watingMillisecond: 1000
+        };
         this.addedArr = [];
         this.deletedArr = [];
         this.updatedArr = [];
@@ -47,28 +53,29 @@ class UnitOfWorkBase {
             this.db.close();
         });
     }
+    query(sql, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.db.query(sql, options);
+        });
+    }
     transactionExecute() {
-        return this.db.transaction({ autocommit: false }).then(t => {
-            const pArr = [];
-            for (const item of this.addedArr) {
-                const opt = { transaction: t };
-                pArr.push(item.rep.model.create(item.entity, opt));
+        return __awaiter(this, void 0, void 0, function* () {
+            const t = yield this.db.transaction({ autocommit: false });
+            try {
+                yield Promise.all([
+                    ...this.addedArr.map(item => item.rep.model.create(item.entity, { transaction: t })),
+                    ...this.updatedArr.map(item => item.save({ transaction: t })),
+                    ...this.deletedArr.map(item => item.destroy({ transaction: t }))
+                ]);
+                t.commit();
+                this.addedArr = [];
+                this.updatedArr = [];
+                this.deletedArr = [];
             }
-            this.addedArr = [];
-            for (const item of this.updatedArr) {
-                pArr.push(item.save({ transaction: t }));
-            }
-            this.updatedArr = [];
-            for (const item of this.deletedArr) {
-                pArr.push(item.destroy({ transaction: t }));
-            }
-            this.deletedArr = [];
-            return Promise.all(pArr)
-                .then(() => t.commit())
-                .catch(err => {
+            catch (err) {
                 t.rollback();
                 throw err;
-            });
+            }
         });
     }
     executeBeforeSaveChange() {
@@ -108,7 +115,15 @@ class UnitOfWorkBase {
     saveChange() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.executeBeforeSaveChange();
-            yield this.transactionExecute();
+            yield util_1.Utils.retryFunc(this.retryingOption.count, this.retryingOption.watingMillisecond, (currentCount) => __awaiter(this, void 0, void 0, function* () {
+                try {
+                    yield this.transactionExecute();
+                    return true;
+                }
+                catch (err) {
+                    return false;
+                }
+            }));
             yield this.executeAfterSaveChange();
         });
     }
