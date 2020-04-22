@@ -35,8 +35,8 @@ export class MyUnitOfWork extends UnitOfWorkBase {
   private init() {
     // setup retrying setting
     this.retryingOption = {
-      count: 5,
-      watingMillisecond: 3000
+      count: 3,
+      watingMillisecond: 1000
     };
 
     // setup db => test in memory

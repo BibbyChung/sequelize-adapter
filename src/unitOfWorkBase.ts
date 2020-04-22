@@ -83,13 +83,13 @@ export abstract class UnitOfWorkBase {
         ...this.updatedArr.map(item => item.save({ transaction: t })),
         ...this.deletedArr.map(item => item.destroy({ transaction: t }))
       ]);
-      t.commit();
+      await t.commit();
 
       this.addedArr = [];
       this.updatedArr = [];
       this.deletedArr = [];
     } catch (err) {
-      t.rollback();
+      await t.rollback();
       throw err;
     }
   }
@@ -136,6 +136,9 @@ export abstract class UnitOfWorkBase {
           await this.transactionExecute();
           return true;
         } catch (err) {
+          if (currentCount >= this.retryingOption.count) {
+            throw err;
+          }
           return false;
         }
       })
