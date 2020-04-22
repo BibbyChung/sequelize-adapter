@@ -160,7 +160,7 @@ mydb.reps.user.add({
 });
 await mydb.saveChange();
 
-//==== update data ====
+// ==== update data ====
 const myDb = new UnitOfWork();
 const uOne = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>({ where: {id: 'xxxxx'} });
 uOne.name = 'Bibby_0';
@@ -169,7 +169,7 @@ uOne.brithday = new Date('2011-10-10');
 mydb.reps.user.update(uOne);
 await mydb.saveChange();
 
-//==== delete data ====
+// ==== delete data ====
 const myDb = new UnitOfWork();
 const data = await mydb.reps.user.getAll<IUserEntity, IUserEntity>({ where: {id: 'xxxxx'} });
 for (const item of data) {
@@ -178,10 +178,23 @@ for (const item of data) {
 await mydb.saveChange();
 
 
-//==== get data ====
+// ==== get data ====
 const myDb = new UnitOfWork();
 const data = await mydb.reps.user.getAll<IUserEntity, IUserEntity>({ where: {id: 'xxxxx'} });
 const data1 = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>({ where: {id: 'xxxxx'} });
+
+// ==== get data by sql statement ====
+const q = `
+  select *
+  from users u
+  where u.age = :age
+`;
+const data: IUserEntity = await mydb.query(q, {
+  replacements: {
+    age: 22
+  },
+  type: QueryTypes.SELECT
+});
 
 ```
 
