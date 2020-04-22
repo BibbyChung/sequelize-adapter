@@ -33,7 +33,13 @@ export class MyUnitOfWork extends UnitOfWorkBase {
   };
 
   private init() {
-    // test in memory
+    // setup retrying setting
+    this.retryingOption = {
+      count: 5,
+      watingMillisecond: 3000
+    };
+
+    // setup db => test in memory
     const setting = {
       host: 'localhost',
       dbName: 'test_db',
@@ -41,7 +47,6 @@ export class MyUnitOfWork extends UnitOfWorkBase {
       password: '1234',
       type: 'sqlite', // 'mysql'
     };
-
     this.db = new Sequelize(setting.dbName, setting.username, setting.password, {
       dialect: 'sqlite',
       pool: {
@@ -51,6 +56,8 @@ export class MyUnitOfWork extends UnitOfWorkBase {
         idle: 10000,
       },
     });
+
+    // setup repositories
     this.__reps = this.reps;
   }
 

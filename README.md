@@ -7,11 +7,16 @@ Use Unit Of Wrok pattern to wrap sequelize up and make sequelize easy to use.
 Install the components
 
 ```shell
-$ npm install sequelize-adapter sequelize --save
+
+npm install sequelize-adapter sequelize --save
+
 ```
 
 ## Features
-- implement the unit of work pattern
+
+- use the unit of work pattern to wrap sequelize
+- setup default trasation by create, update, delete
+- add the retrying feature
 
 ## Quick Start
 
@@ -58,7 +63,13 @@ export class MyUnitOfWork extends UnitOfWorkBase {
   };
 
   private init() {
-    // test in memory
+    // setup retrying setting
+    this.retryingOption = {
+      count: 5,
+      watingMillisecond: 3000
+    };
+
+    // setup db => test in memory
     const setting = {
       host: 'localhost',
       dbName: 'test_db',
@@ -66,7 +77,6 @@ export class MyUnitOfWork extends UnitOfWorkBase {
       password: '1234',
       type: 'sqlite', // 'mysql'
     };
-
     this.db = new Sequelize(setting.dbName, setting.username, setting.password, {
       dialect: 'sqlite',
       pool: {
@@ -76,6 +86,8 @@ export class MyUnitOfWork extends UnitOfWorkBase {
         idle: 10000,
       },
     });
+
+    // setup repositories
     this.__reps = this.reps;
   }
 
@@ -129,6 +141,7 @@ export interface IUserEntity {
 }
 
 ```
+
 CRUD Examples
 
 ```javascript
@@ -175,18 +188,23 @@ const data1 = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>({
 ### Project Up
 
 ```shell
+
 docker run -it --rm -v $(PWD):/app -w /app teracy/angular-cli bash
-```
-or
-```shell
-make workspace-up
+
 ```
 
-### JavaScript 
+or
+
+```shell
+
+make workspace-up
+
+```
+
+### JavaScript
+
 (later...)
 
-## todo list
-(thinking...)
-
 ## References
+
 - http://docs.sequelizejs.com/

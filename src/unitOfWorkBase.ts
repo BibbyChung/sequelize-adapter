@@ -1,8 +1,14 @@
 import { QueryOptionsWithType, QueryTypes, Sequelize } from 'sequelize';
 import { IChangeObject } from './IChangeObject';
 import { RepositoryBase } from './repositoryBase';
+import { Utils } from './util';
 
 export abstract class UnitOfWorkBase {
+
+  protected retryingOption = {
+    count: 3,
+    watingMillisecond: 1000
+  }
 
   abstract get db(): Sequelize;
   abstract set db(value: Sequelize);
@@ -69,33 +75,23 @@ export abstract class UnitOfWorkBase {
     return await this.db.query(sql, options);
   }
 
-  private transactionExecute() {
-    return this.db.transaction({ autocommit: false }).then(t => {
-      const pArr = [];
+  private async transactionExecute() {
+    const t = await this.db.transaction({ autocommit: false });
+    try {
+      await Promise.all([
+        ...this.addedArr.map(item => item.rep.model.create(item.entity, { transaction: t })),
+        ...this.updatedArr.map(item => item.save({ transaction: t })),
+        ...this.deletedArr.map(item => item.destroy({ transaction: t }))
+      ]);
+      t.commit();
 
-      for (const item of this.addedArr) {
-        const opt: any = { transaction: t };
-        pArr.push(item.rep.model.create(item.entity, opt));
-      }
       this.addedArr = [];
-
-      for (const item of this.updatedArr) {
-        pArr.push(item.save({ transaction: t }));
-      }
       this.updatedArr = [];
-
-      for (const item of this.deletedArr) {
-        pArr.push(item.destroy({ transaction: t }));
-      }
       this.deletedArr = [];
-
-      return Promise.all(pArr)
-        .then(() => t.commit())
-        .catch(err => {
-          t.rollback();
-          throw err;
-        });
-    });
+    } catch (err) {
+      t.rollback();
+      throw err;
+    }
   }
 
   private async executeBeforeSaveChange() {
@@ -131,11 +127,19 @@ export abstract class UnitOfWorkBase {
   }
 
   async saveChange() {
-
     await this.executeBeforeSaveChange();
-    await this.transactionExecute();
+    await Utils.retryFunc(
+      this.retryingOption.count,
+      this.retryingOption.watingMillisecond,
+      async (currentCount) => {
+        try {
+          await this.transactionExecute();
+          return true;
+        } catch (err) {
+          return false;
+        }
+      })
     await this.executeAfterSaveChange();
-
   }
 
 }
