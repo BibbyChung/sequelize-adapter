@@ -21,6 +21,7 @@
   "keywords": [
     "sequelize",
     "mysql",
+    "postgresql",
     "sqlite",
     "unitofwork"
   ],
