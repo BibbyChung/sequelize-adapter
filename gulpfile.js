@@ -1,118 +1,35 @@
-"use strict";
+const gulp = require('gulp');
+const spawn = require('child_process').spawn;
 
-let gulp = require("gulp");
-let shell = require("gulp-shell");
-let merge = require("merge-stream");
-let rimraf = require("rimraf");
-let through = require('through2');
+//= ================================== Global Variable ===================================
 
-let ts = require("gulp-typescript");
-let sourcemaps = require("gulp-sourcemaps");
-let path = require('path');
 
-//=================================== Method ===================================
+//= ================================== Method ===================================
 
-let tsCompiler = function (
-  pathArr,
-  tsconfigPath,
-  sourceRoot,
-  targetPath,
-  isUglify
-) {
 
-  let tscP = ts.createProject(tsconfigPath);
+const cmd = (str) => async (cb) => {
+  const arr = str.split(' ');
+  const c0 = arr.shift();
 
-  return gulp.src(pathArr)
-    .pipe(sourcemaps.init())
-    .pipe(tscP())
-    .js
-    //.pipe(uglify())
-    .pipe(sourcemaps.write("./", {
-      includeContent: false,
-      sourceRoot: sourceRoot,
-    }))
-    .pipe(gulp.dest(targetPath));
+  console.log('exec => ', str);
+  await new Promise((resolve, reject) => {
+    const ssp = spawn(c0, arr, { stdio: 'inherit' });
+    ssp.on('close', (code) => {
+      resolve(code);
+    });
 
-};
-
-let tsdCompiler = function (
-  pathArr,
-  tsconfigPath,
-  targetPath
-) {
-
-  let tscP = ts.createProject(tsconfigPath, {
-    "isolatedModules": false,
+    ssp.on('error', function (err) {
+      reject(err);
+    });
   });
 
-  return gulp.src(pathArr)
-    .pipe(tscP())
-    .dts
-    .pipe(gulp.dest(targetPath));
+  cb();
 };
 
-let getCopyFilesPipe = (sourcePatten, targetPath) => {
 
-  return gulp.src(sourcePatten)
-    .pipe(gulp.dest(targetPath));
+//= ================================== Tasks ===================================
 
-};
-
-//=================================== Tasks ===================================
-
-gulp.task("clean", (cb) => {
-
-  rimraf("./dist", cb);
-
-});
-
-gulp.task('ts_compile_dist', () => {
-
-  let m = merge();
-
-  let code = tsCompiler(
-    [
-      "./src/**/*.ts",
-    ],
-    "tsconfig.json",
-    "../src",
-    "./dist",
-    false
-  );
-  m.add(code);
-
-  return m;
-
-});
-
-gulp.task('tsd_compile_dist', () => {
-
-  let m = merge();
-
-  let code = tsdCompiler(
-    [
-      "./src/**/*.ts",
-    ],
-    "./tsconfig.json",
-    "./dist"
-  );
-  m.add(code);
-
-  return m;
-
-});
-
-gulp.task("create_ts_definitions", shell.task([
-  'tsc --declaration ./src/_index.ts'
-  //'cucumber.js --format pretty'
-]));
-
-//----------------------------------------------------------------------
-
-gulp.task("build",
-  gulp.series("clean",
-    gulp.parallel(
-      "ts_compile_dist",
-      "tsd_compile_dist"
-    ))
+exports.build = gulp.parallel(
+  cmd('tsc -p ./tsconfig.json'),
+  cmd('tsc -p ./tsconfig.esm5.json'),
 );

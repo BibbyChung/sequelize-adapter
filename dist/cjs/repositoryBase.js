@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RepositoryBase = void 0;
 class RepositoryBase {
     constructor(unitOfWork) {
         this.unitOfWork = unitOfWork;
@@ -59,5 +60,4 @@ class RepositoryBase {
     }
 }
 exports.RepositoryBase = RepositoryBase;
-
 //# sourceMappingURL=repositoryBase.js.map

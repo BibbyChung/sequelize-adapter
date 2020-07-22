@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,9 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const util_1 = require("./util");
-class UnitOfWorkBase {
+import { Utils } from './util';
+export class UnitOfWorkBase {
     constructor() {
         this.retryingOption = {
             count: 3,
@@ -115,7 +113,7 @@ class UnitOfWorkBase {
     saveChange() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.executeBeforeSaveChange();
-            yield util_1.Utils.retryFunc(this.retryingOption.count, this.retryingOption.watingMillisecond, (currentCount) => __awaiter(this, void 0, void 0, function* () {
+            yield Utils.retryFunc(this.retryingOption.count, this.retryingOption.watingMillisecond, (currentCount) => __awaiter(this, void 0, void 0, function* () {
                 try {
                     yield this.transactionExecute();
                     return true;
@@ -131,6 +129,4 @@ class UnitOfWorkBase {
         });
     }
 }
-exports.UnitOfWorkBase = UnitOfWorkBase;
-
 //# sourceMappingURL=unitOfWorkBase.js.map
