@@ -5,7 +5,7 @@
   "main": "./dist/_index.js",
   "types": "./dist/_index.d.ts",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --opts mocha.opts",
+    "test": "mocha --opts mocha.opts",
     "test1": "./node_modules/ts-node/dist/bin.js ./test/test1.ts",
     "build": "gulp build"
   },
