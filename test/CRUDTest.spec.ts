@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import sinon from 'sinon';
+import { createSandbox, SinonSandbox } from 'sinon';
 import { v4 as uuid4 } from 'uuid';
 
 import { QueryTypes } from 'sequelize';
@@ -9,7 +9,7 @@ import { IUserEntity } from './IUserEntity';
 describe('prepare the database to test', () => {
 
   let mydb: MyUnitOfWork;
-  let sandbox: sinon.SinonSandbox;
+  let sandbox: SinonSandbox;
 
   before(() => {
     // runs before all tests in this block
@@ -26,7 +26,7 @@ describe('prepare the database to test', () => {
     mydb = new MyUnitOfWork();
     await mydb.connectDb();
 
-    sandbox = sinon.sandbox.create();
+    sandbox = createSandbox();
   });
 
   afterEach(async () => {
@@ -94,10 +94,13 @@ describe('prepare the database to test', () => {
         assert.equal(item.after, null);
       }
     };
+
     await mydb.saveChange();
+
   });
 
   it('test the hooks after writing to database', async () => {
+
     mydb.reps.user.add({
       id: uuid4(),
       name: 'Bibby_',
@@ -111,6 +114,7 @@ describe('prepare the database to test', () => {
 
     assert.equal(1, stubBeforeSaveChange.callCount);
     assert.equal(1, stubAfterSaveChange.callCount);
+    
   });
 
   it('add items, update items and delete items in database', async () => {

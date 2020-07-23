@@ -49,7 +49,7 @@ export abstract class UnitOfWorkBase {
         const rep = this.__reps[item] as RepositoryBase<any>;
         await rep.syncModel();
       }
-      console.log('connect db', 'Connection has been established successfully.');
+      console.log('db connection has been established successfully.');
     } catch (err) {
       throw err;
     }
