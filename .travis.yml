@@ -7,6 +7,14 @@ node_js:
   - "10"
   - "11"
   - "12"
+cache:
+  npm: false
+  directories:
+    - ./.yarn/cache
 before_script:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - export PATH="$HOME/.yarn/bin:$PATH"
+  - yarn -v
   - yarn
-script: yarn run test
+script: 
+  - yarn run test
