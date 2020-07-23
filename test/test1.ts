@@ -1,4 +1,4 @@
-import uuid4 from 'uuid/v4';
+import { v4 as uuid4 } from 'uuid';
 
 import { IUserEntity } from './IUserEntity';
 import { MyUnitOfWork } from './myUnitOfWork';
@@ -23,7 +23,7 @@ const fun = async () => {
   uOne.name = 'Bibby_999999999999999';
   console.log(uOne._previousDataValues);
   console.log(uOne.dataValues);
-  console.log(uOne._modelOptions.name.plural);
+  console.log(uOne.constructor.options.name.plural);
   console.log('-----');
 
   const q = `

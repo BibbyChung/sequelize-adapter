@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import uuid4 from 'uuid/v4';
+import { v4 as uuid4 } from 'uuid';
 
 import { QueryTypes } from 'sequelize';
 import { MyUnitOfWork } from './myUnitOfWork';
