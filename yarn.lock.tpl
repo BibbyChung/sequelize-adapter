@@ -81,14 +81,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
-  version: 11.15.18
-  resolution: "@types/node@npm:11.15.18"
-  checksum: 48330a23da1d7bf8b2469c6c0fb2c5a0d66f52617f147728dc6a179ee601af6537161955ef462d94a2d80d29d3d8e8353674095891e4b850d7bf4244c00df79d
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^14.0.24":
+"@types/node@npm:*, @types/node@npm:^14.0.24":
   version: 14.0.24
   resolution: "@types/node@npm:14.0.24"
   checksum: b10d6b56faeb7fdf2d2527d7aa685b472adaf810612903d667e364eb53a1ffd2ee0e74f25ab135375c7c3f77400cf05a569d7b8d5eee51cbf7b2f748ec86383d
@@ -131,9 +124,9 @@ __metadata:
   linkType: hard
 
 "@types/validator@npm:*":
-  version: 10.11.3
-  resolution: "@types/validator@npm:10.11.3"
-  checksum: 8b1c0c744e0068634e6b1f8af554af2a1f212f3de6d891f88318b317677cb36eb0a25ab6a1ac0df44d682cf95252ff970c9169fab081888a8a66f902f246b1f5
+  version: 13.1.0
+  resolution: "@types/validator@npm:13.1.0"
+  checksum: 0a0d0f89d6e111ea7428319efeb983291d8e091d20ed75a90f4ef4a89a4f5b1434e66399f875c280ecfb389c71ecd6b12505cddc4855186d4d04c0f9499e1b65
   languageName: node
   linkType: hard
 
@@ -185,6 +178,13 @@ __metadata:
   version: 2.1.1
   resolution: "ansi-regex@npm:2.1.1"
   checksum: 93a53c923fd433f67cd3d5647dffa6790f37bbfb924cf73ad23e28a8e414bde142d1da260d9a2be52ac4aa382063196880b1d40cf8b547642c746ed538ebf6c4
+  languageName: node
+  linkType: hard
+
+"ansi-regex@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "ansi-regex@npm:3.0.0"
+  checksum: 2e3c40d42904366e4a1a7b906ea3ae7968179a50916dfa0fd3e59fd12333c5d95970a9a59067ac3406d97c78784d591f0b841a4efd365dafb261327ae1ea3478
   languageName: node
   linkType: hard
 
@@ -1737,16 +1737,17 @@ fsevents@~2.1.2:
   linkType: hard
 
 "glob-watcher@npm:^5.0.3":
-  version: 5.0.3
-  resolution: "glob-watcher@npm:5.0.3"
+  version: 5.0.5
+  resolution: "glob-watcher@npm:5.0.5"
   dependencies:
     anymatch: ^2.0.0
     async-done: ^1.2.0
     chokidar: ^2.0.0
     is-negated-glob: ^1.0.0
     just-debounce: ^1.0.0
+    normalize-path: ^3.0.0
     object.defaults: ^1.1.0
-  checksum: 6a24d847bbb0d510289e22b4e4d7a0c6a281aea1da674c0b0585537bb57eb32c7c59af1e2158e43687a0f82145fd472cac7f6df05f86980971aa8d88314f0256
+  checksum: 0d1e529fbce75d6c0b32e4872c82cd927f9ad4a5750455f1467530344e6a718e32eef2339323e23cf4a1aceb90fb582f5444ef6a43dabfdaba8d0c06fe2a4518
   languageName: node
   linkType: hard
 
@@ -4298,7 +4299,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"string-width@npm:^1.0.1, string-width@npm:^1.0.2, string-width@npm:^1.0.2 || 2":
+"string-width@npm:^1.0.1, string-width@npm:^1.0.2":
   version: 1.0.2
   resolution: "string-width@npm:1.0.2"
   dependencies:
@@ -4306,6 +4307,16 @@ fsevents@~2.1.2:
     is-fullwidth-code-point: ^1.0.0
     strip-ansi: ^3.0.0
   checksum: b11745daa9398a1b3bb37ffa64263f9869c5f790901ed1242decb08171785346447112ead561cffde6b222a5ebeab9d2b382c72ae688859e852aa29325ca9d0b
+  languageName: node
+  linkType: hard
+
+"string-width@npm:^1.0.2 || 2":
+  version: 2.1.1
+  resolution: "string-width@npm:2.1.1"
+  dependencies:
+    is-fullwidth-code-point: ^2.0.0
+    strip-ansi: ^4.0.0
+  checksum: 906b4887c39d247e9d12dfffb42bfe68655b52d27758eb13e069dce0f4cf2e7f82441dbbe44f7279298781e6f68e1c659451bd4d9e2bbe9d487a157ad14ae1bd
   languageName: node
   linkType: hard
 
@@ -4355,6 +4366,15 @@ fsevents@~2.1.2:
   dependencies:
     ansi-regex: ^2.0.0
   checksum: 98772dcf440d08f65790ee38cd186b1f139fa69b430e75f9d9c11f97058662f82a22c2ba03a30f502f948958264e99051524fbf1819edaa8a8bbb909ece297da
+  languageName: node
+  linkType: hard
+
+"strip-ansi@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "strip-ansi@npm:4.0.0"
+  dependencies:
+    ansi-regex: ^3.0.0
+  checksum: 9ac63872c2ba5e8a946c6f3a9c1ab81db5b43bce0d24a33b016e5666d3efda421f721447a1962611053a3ca1595b8742b0216fcc25886958d4565b7afcd27013
   languageName: node
   linkType: hard
 
