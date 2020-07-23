@@ -208,7 +208,7 @@ const data: IUserEntity = await mydb.query(q, {
 
 ```shell
 
-docker run -it --rm -v $(PWD):/app -w /app teracy/angular-cli bash
+docker run -it --rm -v $(PWD):/app -w /app node:12.18-alpine sh
 
 ```
 
