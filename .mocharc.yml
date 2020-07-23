@@ -1,0 +1,10 @@
+require: 'ts-node/register'
+spec: 'test/**/*.spec.ts'
+extension:
+  - 'ts'
+watch-files:
+  - 'src'
+  - 'test'
+watch: false
+
+# mocha --require ts-node/register --extensions ts,tsx --watch --watch-files src 'tests/**/*.{ts,tsx}'

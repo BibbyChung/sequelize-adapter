@@ -49,7 +49,7 @@ export abstract class UnitOfWorkBase {
         const rep = this.__reps[item] as RepositoryBase<any>;
         await rep.syncModel();
       }
-      console.log('connect db', 'Connection has been established successfully.');
+      console.log('db connection has been established successfully.');
     } catch (err) {
       throw err;
     }
@@ -106,7 +106,7 @@ export abstract class UnitOfWorkBase {
     const updatedEntities = this.updatedArr.map(a => {
       const one: any = a;
       return {
-        tableName: a._modelOptions.name.plural,
+        tableName: one.constructor.options.name.plural,
         before: one._previousDataValues,
         after: one.dataValues,
       };
@@ -114,7 +114,7 @@ export abstract class UnitOfWorkBase {
     const deletedEntities = this.deletedArr.map(a => {
       const one: any = a;
       return {
-        tableName: a._modelOptions.name.plural,
+        tableName: one.constructor.options.name.plural,
         before: one,
         after: null,
       };

@@ -1,6 +1,5 @@
-import { assert } from 'chai';
-import sinon from 'sinon';
-import uuid4 from 'uuid/v4';
+import { createSandbox, SinonSandbox, SinonAssert } from 'sinon';
+import { v4 as uuid4 } from 'uuid';
 
 import { QueryTypes } from 'sequelize';
 import { MyUnitOfWork } from './myUnitOfWork';
@@ -9,7 +8,8 @@ import { IUserEntity } from './IUserEntity';
 describe('prepare the database to test', () => {
 
   let mydb: MyUnitOfWork;
-  let sandbox: sinon.SinonSandbox;
+  let sandbox: SinonSandbox;
+  let assert: SinonAssert;
 
   before(() => {
     // runs before all tests in this block
@@ -26,7 +26,8 @@ describe('prepare the database to test', () => {
     mydb = new MyUnitOfWork();
     await mydb.connectDb();
 
-    sandbox = sinon.sandbox.create();
+    sandbox = createSandbox();
+    assert = sandbox.assert;
   });
 
   afterEach(async () => {
@@ -68,36 +69,39 @@ describe('prepare the database to test', () => {
     mydb.beforeSaveChange = async (addedObjs, updatedObs, deletedObjs) => {
       // add
       for (const item of addedObjs) {
-        assert.equal(item.tableName, 'users');
-        assert.equal(item.before, null);
+        assert.match(item.tableName, 'users');
+        assert.match(item.before, null);
         const user = item.after as IUserEntity;
-        assert.equal(user.name, 'Bibby_');
-        assert.equal(user.age, 21);
+        assert.match(user.name, 'Bibby_');
+        assert.match(user.age, 21);
       }
       // update
       for (const item of updatedObs) {
         const before = item.before as IUserEntity;
         const after = item.after as IUserEntity;
-        assert.equal(item.tableName, 'users');
-        assert.equal(before.age, 21);
-        assert.equal(before.name, 'Bibby_0');
-        assert.equal(after.age, 99);
-        assert.equal(after.name, 'xxxx');
+        assert.match(item.tableName, 'users');
+        assert.match(before.age, 21);
+        assert.match(before.name, 'Bibby_0');
+        assert.match(after.age, 99);
+        assert.match(after.name, 'xxxx');
       }
 
       // delete
       for (const item of deletedObjs) {
         const user = item.before as IUserEntity;
-        assert.equal(item.tableName, 'users');
-        assert.equal(user.name, 'Bibby_1');
-        assert.equal(user.age, 22);
-        assert.equal(item.after, null);
+        assert.match(item.tableName, 'users');
+        assert.match(user.name, 'Bibby_1');
+        assert.match(user.age, 22);
+        assert.match(item.after, null);
       }
     };
+
     await mydb.saveChange();
+
   });
 
   it('test the hooks after writing to database', async () => {
+
     mydb.reps.user.add({
       id: uuid4(),
       name: 'Bibby_',
@@ -109,8 +113,9 @@ describe('prepare the database to test', () => {
     const stubAfterSaveChange = sandbox.stub(MyUnitOfWork.prototype, 'afterSaveChange');
     await mydb.saveChange();
 
-    assert.equal(1, stubBeforeSaveChange.callCount);
-    assert.equal(1, stubAfterSaveChange.callCount);
+    assert.match(1, stubBeforeSaveChange.callCount);
+    assert.match(1, stubAfterSaveChange.callCount);
+
   });
 
   it('add items, update items and delete items in database', async () => {
@@ -131,9 +136,9 @@ describe('prepare the database to test', () => {
     const expectedR = await mydb.reps.user.getAll<IUserEntity, IUserEntity>(criteria);
     const expectedROne = expectedR[4];
 
-    assert.equal(5, expectedR.length);
-    assert.equal('Bibby_4', expectedROne.name);
-    assert.equal(25, expectedROne.age);
+    assert.match(5, expectedR.length);
+    assert.match('Bibby_4', expectedROne.name);
+    assert.match(25, expectedROne.age);
 
     // update items
     const uOne = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>(criteria);
@@ -145,8 +150,8 @@ describe('prepare the database to test', () => {
 
     const expectedUone = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>(criteria);
 
-    assert.equal('BBB', expectedUone.name);
-    assert.equal(33, expectedUone.age);
+    assert.match('BBB', expectedUone.name);
+    assert.match(33, expectedUone.age);
 
     // delete items
     const data = await mydb.reps.user.getAll<IUserEntity, IUserEntity>();
@@ -156,7 +161,7 @@ describe('prepare the database to test', () => {
     await mydb.saveChange();
 
     const expectedD = await mydb.reps.user.getAll<IUserEntity, IUserEntity>();
-    assert.equal(0, expectedD.length);
+    assert.match(0, expectedD.length);
 
   });
 
@@ -189,9 +194,9 @@ describe('prepare the database to test', () => {
 
     const user: IUserEntity = data[0] as IUserEntity;
 
-    assert.equal(1, data.length);
-    assert.equal('Bibby_1', user.name);
-    assert.equal(22, user.age);
+    assert.match(1, data.length);
+    assert.match('Bibby_1', user.name);
+    assert.match(22, user.age);
 
   });
 
