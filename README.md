@@ -2,6 +2,11 @@
 
 Use Unit Of Wrok pattern to wrap sequelize up and make sequelize easy to use.
 
+## Requirement
+
+- sequelize-adapter@2.x.x. only support Node 10 or above.
+- if your node environment is old, please choose sequelize-adapter@1.x.x..
+
 ## Install
 
 Install the components
@@ -214,10 +219,6 @@ or
 make workspace-up
 
 ```
-
-### JavaScript
-
-(later...)
 
 ## References
 
