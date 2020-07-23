@@ -7,8 +7,7 @@ node_js:
   - "10"
   - "11"
 before_script:
-  - rm -f $HOME/.yarnrc.yml
   - yarn set version berry
-  - echo "nodeLinker: node-modules" >> $HOME/.yarnrc.yml
+  - echo "nodeLinker: node-modules" >> .yarnrc.yml
   - yarn
 script: yarn run test
