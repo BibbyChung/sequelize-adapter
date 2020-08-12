@@ -23,8 +23,7 @@ describe('prepare the database to test', () => {
     // runs before each test in this block
     this.timeout(60 * 1000 * 10);
 
-    mydb = new MyUnitOfWork();
-    await mydb.connectDb();
+    mydb = await MyUnitOfWork.getInstance();
 
     sandbox = createSandbox();
     assert = sandbox.assert;

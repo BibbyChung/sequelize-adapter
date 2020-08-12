@@ -1,7 +1,11 @@
+import debug from 'debug';
 import { QueryOptionsWithType, QueryTypes, Sequelize } from 'sequelize';
 import { IChangeObject } from './IChangeObject';
 import { RepositoryBase } from './repositoryBase';
 import { Utils } from './util';
+
+const myDebug = debug('sequelize-adapter');
+myDebug.enabled = false;
 
 export abstract class UnitOfWorkBase {
 
@@ -38,25 +42,16 @@ export abstract class UnitOfWorkBase {
     this.updatedArr.push(entity);
   }
 
-  async connectDb() {
-    if (!this.db) {
-      throw Error('please set up the connection information.');
-    }
-
+  async syncModels() {
     try {
-      await this.db.authenticate();
       for (const item in this.__reps) {
         const rep = this.__reps[item] as RepositoryBase<any>;
         await rep.syncModel();
       }
-      console.log('db connection has been established successfully.');
+      myDebug('sync models successfully.');
     } catch (err) {
       throw err;
     }
-  }
-
-  async close() {
-    this.db.close();
   }
 
   async query(
