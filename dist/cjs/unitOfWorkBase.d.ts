@@ -17,8 +17,7 @@ export declare abstract class UnitOfWorkBase {
     __add<T>(rep: RepositoryBase<T>, entity: T): void;
     __delete<T>(rep: RepositoryBase<T>, entity: T): void;
     __update<T>(rep: RepositoryBase<T>, entity: T): void;
-    connectDb(): Promise<void>;
-    close(): Promise<void>;
+    syncModels(): Promise<void>;
     query(sql: string | {
         query: string;
         values: unknown[];

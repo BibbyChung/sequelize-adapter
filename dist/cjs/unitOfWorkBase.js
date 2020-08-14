@@ -8,9 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UnitOfWorkBase = void 0;
+const debug_1 = __importDefault(require("debug"));
 const util_1 = require("./util");
+const myDebug = debug_1.default('sequelize-adapter');
+myDebug.enabled = false;
 class UnitOfWorkBase {
     constructor() {
         this.retryingOption = {
@@ -31,27 +37,18 @@ class UnitOfWorkBase {
     __update(rep, entity) {
         this.updatedArr.push(entity);
     }
-    connectDb() {
+    syncModels() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.db) {
-                throw Error('please set up the connection information.');
-            }
             try {
-                yield this.db.authenticate();
                 for (const item in this.__reps) {
                     const rep = this.__reps[item];
                     yield rep.syncModel();
                 }
-                console.log('db connection has been established successfully.');
+                myDebug('sync models successfully.');
             }
             catch (err) {
                 throw err;
             }
-        });
-    }
-    close() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.db.close();
         });
     }
     query(sql, options) {
