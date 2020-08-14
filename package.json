@@ -9,7 +9,7 @@
   "scripts": {
     "test": "mocha",
     "cov": "nyc mocha",
-    "upgrade-interactive": "npm-check --update",
+    "upgrade-interactive": "npx npm-check --update",
     "test1": "./node_modules/ts-node/dist/bin.js ./test/test1.ts",
     "build": "gulp build"
   },
@@ -38,7 +38,6 @@
     "gulp": "^4.0.2",
     "mocha": "^8.1.1",
     "mysql2": "^2.1.0",
-    "npm-check": "^5.9.2",
     "nyc": "^15.1.0",
     "sinon": "^9.0.3",
     "sqlite3": "^5.0.0",
