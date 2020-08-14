@@ -5,8 +5,7 @@ import { MyUnitOfWork } from './myUnitOfWork';
 import { QueryTypes } from 'sequelize';
 
 const fun = async () => {
-  const mydb = new MyUnitOfWork();
-  await mydb.connectDb();
+  const mydb = await MyUnitOfWork.getInstance();
 
   for (let i = 0; i < 5; i += 1) {
     mydb.reps.user.add({
