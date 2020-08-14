@@ -19,9 +19,10 @@ npm install sequelize-adapter sequelize --save
 
 ## Features
 
+- use the singleton pattern to design
 - use the unit of work pattern to wrap sequelize
-- setup default trasation by create, update, delete
-- add the retrying feature
+- use trasation feature to create, update, delete by default
+- support retrying feature
 - support ES2015 module
 
 ## Quick Start
