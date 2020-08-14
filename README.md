@@ -168,11 +168,8 @@ CRUD Examples
 
 ```javascript
 
-// ==== connect DB =====
-const mydb = await MyUnitOfWork.getInstance();
-
 // ==== create data =====
-const mydb = new MyUnitOfWork();
+const mydb = await MyUnitOfWork.getInstance();
 mydb.reps.user.add({
   id: uuid4(),
   name: `Bibby`,
@@ -182,7 +179,7 @@ mydb.reps.user.add({
 await mydb.saveChange();
 
 // ==== update data ====
-const myDb = new UnitOfWork();
+const mydb = await MyUnitOfWork.getInstance();
 const uOne = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>({ where: {id: 'xxxxx'} });
 uOne.name = 'Bibby_0';
 uOne.age = 28;
@@ -191,7 +188,7 @@ mydb.reps.user.update(uOne);
 await mydb.saveChange();
 
 // ==== delete data ====
-const myDb = new UnitOfWork();
+const mydb = await MyUnitOfWork.getInstance();
 const data = await mydb.reps.user.getAll<IUserEntity, IUserEntity>({ where: {id: 'xxxxx'} });
 for (const item of data) {
   mydb.reps.user.delete(item);
@@ -200,11 +197,12 @@ await mydb.saveChange();
 
 
 // ==== get data ====
-const myDb = new UnitOfWork();
+const mydb = await MyUnitOfWork.getInstance();
 const data = await mydb.reps.user.getAll<IUserEntity, IUserEntity>({ where: {id: 'xxxxx'} });
 const data1 = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>({ where: {id: 'xxxxx'} });
 
 // ==== get data by sql statement ====
+const mydb = await MyUnitOfWork.getInstance();
 const q = `
   select *
   from users u
