@@ -30,6 +30,7 @@ const cmd = (str) => async (cb) => {
 //= ================================== Tasks ===================================
 
 exports.build = gulp.parallel(
+  cmd('mocha'),
   cmd('tsc -p ./tsconfig.json'),
   cmd('tsc -p ./tsconfig.esm5.json'),
 );

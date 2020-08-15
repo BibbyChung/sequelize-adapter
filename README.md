@@ -1,4 +1,4 @@
-# sequelize-adapter [![Build Status](https://travis-ci.org/BibbyChung/sequelize-adapter.svg?branch=master)](https://travis-ci.org/BibbyChung/sequelize-adapter) [![npm](https://img.shields.io/npm/v/sequelize-adapter.svg)](https://github.com/BibbyChung/sequelize-adapter)
+# sequelize-adapter [![Build Status](https://travis-ci.org/BibbyChung/sequelize-adapter.svg?branch=master)](https://travis-ci.org/BibbyChung/sequelize-adapter) [![npm](https://img.shields.io/npm/v/sequelize-adapter.svg)](https://github.com/BibbyChung/sequelize-adapter) [![Coverage Status](https://coveralls.io/repos/github/BibbyChung/sequelize-adapter/badge.svg?branch=master)](https://coveralls.io/github/BibbyChung/sequelize-adapter?branch=master)
 
 Use Unit Of Wrok pattern to wrap sequelize up and make sequelize easy to use.
 
