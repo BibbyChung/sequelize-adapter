@@ -113,7 +113,7 @@ class UnitOfWorkBase {
     saveChange() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.executeBeforeSaveChange();
-            yield util_1.Utils.retryFunc(this.retryingOption.count, this.retryingOption.watingMillisecond, (currentCount) => __awaiter(this, void 0, void 0, function* () {
+            yield util_1.retryFunc(this.retryingOption.count, this.retryingOption.watingMillisecond, (currentCount) => __awaiter(this, void 0, void 0, function* () {
                 try {
                     yield this.transactionExecute();
                     return true;

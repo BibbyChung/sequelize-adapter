@@ -9,31 +9,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Utils = void 0;
-class Utils {
-    static retryFunc(count, waitingMillisecond, func, currentCount = 1) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const residue = count - currentCount;
-            if (residue < 0) {
-                return;
-            }
-            const bo = yield func(currentCount);
-            if (bo) {
-                return;
-            }
-            yield Utils.sleep(waitingMillisecond);
-            yield Utils.retryFunc(count, waitingMillisecond, func, currentCount + 1);
-        });
+exports.retryFunc = void 0;
+const sleep = (ms) => new Promise((resolve) => {
+    setTimeout(() => {
+        resolve();
+    }, ms);
+});
+const retryFunc = (count, waitingMillisecond, func, currentCount = 1) => __awaiter(void 0, void 0, void 0, function* () {
+    const residue = count - currentCount;
+    if (residue < 0) {
+        return;
     }
-    static sleep(ms) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve();
-                }, ms);
-            });
-        });
+    const bo = yield func(currentCount);
+    if (bo) {
+        return;
     }
-}
-exports.Utils = Utils;
+    yield sleep(waitingMillisecond);
+    yield exports.retryFunc(count, waitingMillisecond, func, currentCount + 1);
+});
+exports.retryFunc = retryFunc;
 //# sourceMappingURL=util.js.map
