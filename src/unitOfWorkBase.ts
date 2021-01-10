@@ -2,7 +2,7 @@ import debug from 'debug';
 import { QueryOptionsWithType, QueryTypes, Sequelize } from 'sequelize';
 import { IChangeObject } from './IChangeObject';
 import { RepositoryBase } from './repositoryBase';
-import { Utils } from './util';
+import { retryFunc } from './util';
 
 const myDebug = debug('sequelize-adapter');
 myDebug.enabled = false;
@@ -123,7 +123,7 @@ export abstract class UnitOfWorkBase {
 
   async saveChange() {
     await this.executeBeforeSaveChange();
-    await Utils.retryFunc(
+    await retryFunc(
       this.retryingOption.count,
       this.retryingOption.watingMillisecond,
       async (currentCount) => {
