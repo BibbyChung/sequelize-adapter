@@ -7,29 +7,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-export class Utils {
-    static retryFunc(count, waitingMillisecond, func, currentCount = 1) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const residue = count - currentCount;
-            if (residue < 0) {
-                return;
-            }
-            const bo = yield func(currentCount);
-            if (bo) {
-                return;
-            }
-            yield Utils.sleep(waitingMillisecond);
-            yield Utils.retryFunc(count, waitingMillisecond, func, currentCount + 1);
-        });
+const sleep = (ms) => new Promise((resolve) => {
+    setTimeout(() => {
+        resolve();
+    }, ms);
+});
+export const retryFunc = (count, waitingMillisecond, func, currentCount = 1) => __awaiter(void 0, void 0, void 0, function* () {
+    const residue = count - currentCount;
+    if (residue < 0) {
+        return;
     }
-    static sleep(ms) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve();
-                }, ms);
-            });
-        });
+    const bo = yield func(currentCount);
+    if (bo) {
+        return;
     }
-}
+    yield sleep(waitingMillisecond);
+    yield retryFunc(count, waitingMillisecond, func, currentCount + 1);
+});
 //# sourceMappingURL=util.js.map

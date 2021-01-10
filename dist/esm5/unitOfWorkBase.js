@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import debug from 'debug';
-import { Utils } from './util';
+import { retryFunc } from './util';
 const myDebug = debug('sequelize-adapter');
 myDebug.enabled = false;
 export class UnitOfWorkBase {
@@ -107,7 +107,7 @@ export class UnitOfWorkBase {
     saveChange() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.executeBeforeSaveChange();
-            yield Utils.retryFunc(this.retryingOption.count, this.retryingOption.watingMillisecond, (currentCount) => __awaiter(this, void 0, void 0, function* () {
+            yield retryFunc(this.retryingOption.count, this.retryingOption.watingMillisecond, (currentCount) => __awaiter(this, void 0, void 0, function* () {
                 try {
                     yield this.transactionExecute();
                     return true;
