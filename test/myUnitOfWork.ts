@@ -1,13 +1,55 @@
-import { Sequelize } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { IChangeObject } from '../src/IChangeObject';
 import { UnitOfWorkBase } from '../src/unitOfWorkBase';
 import { UserRepository } from './userRepository';
+
+function getOperatorsAliases() {
+  const op = Op;
+  return {
+    $eq: op.eq,
+    $ne: op.ne,
+    $gte: op.gte,
+    $gt: op.gt,
+    $lte: op.lte,
+    $lt: op.lt,
+    $not: op.not,
+    $in: op.in,
+    $notIn: op.notIn,
+    $is: op.is,
+    $like: op.like,
+    $notLike: op.notLike,
+    $iLike: op.iLike,
+    $notILike: op.notILike,
+    $regexp: op.regexp,
+    $notRegexp: op.notRegexp,
+    $iRegexp: op.iRegexp,
+    $notIRegexp: op.notIRegexp,
+    $between: op.between,
+    $notBetween: op.notBetween,
+    $overlap: op.overlap,
+    $contains: op.contains,
+    $contained: op.contained,
+    $adjacent: op.adjacent,
+    $strictLeft: op.strictLeft,
+    $strictRight: op.strictRight,
+    $noExtendRight: op.noExtendRight,
+    $noExtendLeft: op.noExtendLeft,
+    $and: op.and,
+    $or: op.or,
+    $any: op.any,
+    $all: op.all,
+    // $values: op.values,
+    $col: op.col
+  };
+}
 
 export class MyUnitOfWork extends UnitOfWorkBase {
 
   private static _instance: Sequelize;
   static async getInstance() {
     if (!MyUnitOfWork._instance) {
+      const operatorsAliases = getOperatorsAliases();
+
       // setup db => test in memory
       const setting = {
         host: 'localhost',
@@ -25,6 +67,7 @@ export class MyUnitOfWork extends UnitOfWorkBase {
           idle: 10000,
         },
         logging: false,
+        operatorsAliases
       });
 
       try {
