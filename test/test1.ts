@@ -12,30 +12,31 @@ const fun = () => {
 
   const addDataSub = from(MyUnitOfWork.getInstance())
     .pipe(
+      switchMap((mydb) => from(mydb.syncModels()).pipe(map(() => mydb))),
       // add data
-      map((dbClient) => {
+      map((mydb) => {
         for (let i = 0; i < 5; i += 1) {
-          dbClient.reps.user.add({
+          mydb.reps.user.add({
             id: uuid4(),
             name: `Bibby_${i}`,
             age: 21 + i,
             birthday: new Date(),
           });
         }
-        return dbClient;
+        return mydb;
       }),
-      switchMap((dbClient) => from(dbClient.saveChange())
+      switchMap((mydb) => from(mydb.saveChange())
         .pipe(
-          map(() => dbClient)
+          map(() => mydb)
         )
       ),
       // select where
-      switchMap((dbClient) => {
+      switchMap((mydb) => {
         const criteria = { order: ['name'] };
-        return from(dbClient.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>(criteria))
+        return from(mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>(criteria))
           .pipe(map((one) => ({
             one,
-            dbClient,
+            mydb,
           })))
       }),
       map(a => {
@@ -44,15 +45,15 @@ const fun = () => {
         console.log(uOne._previousDataValues);
         console.log(uOne.dataValues);
         console.log(uOne.constructor.options.name.plural);
-        return a.dbClient;
+        return a.mydb;
       }),
-      switchMap((dbClient) => {
+      switchMap((mydb) => {
         const q = `
           select *
           from users u
           where u.age = :age
         `;
-        return from(dbClient.query(q, {
+        return from(mydb.query(q, {
           replacements: {
             age: 22
           },
@@ -63,7 +64,7 @@ const fun = () => {
     ).subscribe(() => addDataSub.unsubscribe());
 
   // const criteria = { order: ['name'] };
-  // const uOne: any = await dbClient.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>(criteria);
+  // const uOne: any = await mydb.reps.user.getFirstOrDefault<IUserEntity, IUserEntity>(criteria);
   // uOne.name = 'Bibby_999999999999999';
   // console.log(uOne._previousDataValues);
   // console.log(uOne.dataValues);
@@ -75,7 +76,7 @@ const fun = () => {
   //   from users u
   //   where u.age = :age
   // `;
-  // const data: IUserEntity = await dbClient.query(q, {
+  // const data: IUserEntity = await mydb.query(q, {
   //   replacements: {
   //     age: 22
   //   },
