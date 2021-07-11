@@ -5,7 +5,7 @@ import { UserRepository } from './userRepository';
 
 export class MyUnitOfWork extends UnitOfWorkBase {
 
-  private static _instance: MyUnitOfWork;
+  private static _instance: Sequelize;
   static async getInstance() {
     if (!MyUnitOfWork._instance) {
       // setup db => test in memory
@@ -26,12 +26,17 @@ export class MyUnitOfWork extends UnitOfWorkBase {
         },
         logging: false,
       });
-      const u = new this(s);
-      await u.connectDb();
-      await u.syncModels();
-      MyUnitOfWork._instance = u;
+
+      try {
+        await s.authenticate();
+        console.log('connect db successfully.');
+      } catch (err) {
+        throw err;
+      }
+
+      MyUnitOfWork._instance = s;
     }
-    return MyUnitOfWork._instance;
+    return new this(MyUnitOfWork._instance);
   }
 
   private constructor(public db: Sequelize) {
@@ -48,15 +53,6 @@ export class MyUnitOfWork extends UnitOfWorkBase {
   }
   afterSaveChange() {
     // do something...
-  }
-
-  async connectDb() {
-    try {
-      await this.db.authenticate();
-      console.log('connect db successfully.');
-    } catch (err) {
-      throw err;
-    }
   }
 
   async close() {

@@ -1,4 +1,4 @@
-import { BuildOptions, CountOptions, FindOptions, Model, ModelAttributes } from 'sequelize';
+import { CountOptions, FindOptions, ModelAttributes } from 'sequelize';
 import { UnitOfWorkBase } from './unitOfWorkBase';
 
 export abstract class RepositoryBase<T> {
@@ -8,10 +8,8 @@ export abstract class RepositoryBase<T> {
   abstract get schema(): ModelAttributes;
 
   get model() {
-    const obj: any = this.unitOfWork.db.define(this.tableName, this.schema, this.tableOption);
-    return obj as typeof Model & {
-      new(values?: object, options?: BuildOptions): T;
-    };
+    const obj = this.unitOfWork.db.define(this.tableName, this.schema, this.tableOption);
+    return obj;
   }
 
   private get tableOption() {

@@ -25,6 +25,9 @@ describe('prepare the database to test', () => {
 
     mydb = await MyUnitOfWork.getInstance();
 
+    // sync model
+    await mydb.syncModels();
+
     sandbox = createSandbox();
     assert = sandbox.assert;
   });
